@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="icon" type="image/png" href="./favicon.png">
+	<title>A small hex map</title>
+	<script src="./bundle.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+		window.onload = function () {
+			// Create a random grid with this configuration.
+			var minHeight = 3,
+				minWidth = 3,
+				maxWidth = 10;
+				maxHeight = 15;
+
+			var newRandomGrid = function () {
+				var width = Math.floor(Math.random() * (maxWidth - minWidth)) + minHeight;
+				var height = Math.floor(Math.random() * (maxHeight - minHeight)) + minWidth;
+
+				var grid = document.getElementById('grid');
+
+				// Delete everything inside the grid element.
+				while (grid.firstChild) {
+					grid.removeChild(grid.firstChild);
+				}
+
+				// Create a new grid.
+				var App = require('/src/App.js');
+				var app = new App({
+					container: grid,
+					tileSize: 24,
+					width: width,
+					height: height,
+					onAnimationComplete: arguments.callee
+				});
+
+				return app;
+			}
+
+			var app = newRandomGrid();
+		};
+	</script>
+	<meta charset="utf-8" />
+</head>
+<body>
+	<div id="grid"></div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{
+  "name": "hex-grid",
+  "version": "0.9.0",
+  "description": "A library for working with hexagonal grids.",
+  "main": "bundle.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/euoia/hex-grid"
+  },
+  "keywords": [
+    "hex",
+    "hexagonal",
+    "grid",
+    "grids",
+    "hex grid",
+    "map",
+    "maps",
+    "library"
+  ],
+  "author": "James Pickard <james.pickard@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/euoia/hex-grid/issues"
+  },
+  "homepage": "https://github.com/euoia/hex-grid",
+  "devDependencies": {
+    "mocha": "2.1.0",
+    "expect.js": "0.3.1"
+  }
+}
