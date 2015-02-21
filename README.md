@@ -2,6 +2,9 @@ hex-grid.js
 ===========
 A JavaScript library for working with hexagonal grids.
 
+With inspiration from
+[http://www.redblobgames.com/grids/hexagons](http://www.redblobgames.com/grids/hexagons).
+
 Running the tests
 -----------------
 After installing development dependencies using `npm install` you should be
