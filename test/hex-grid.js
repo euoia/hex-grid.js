@@ -3,7 +3,7 @@
 
 var assert = require('assert'),
 	expect = require('expect.js'),
-	HexGrid = require('../src/HexGrid.js');
+	HexGrid = require('../src/hex-grid.js');
 
 describe('HexGrid', function() {
 	var TileFactory = function () {

@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+	"builddocs": "jsdoc2md -t docs/README.hbs src/hex-grid.js > README.md"
   },
   "repository": {
     "type": "git",
