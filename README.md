@@ -1,6 +1,6 @@
-hex-grid
-========
-A library for working with hexagonal grids.
+hex-grid.js
+===========
+A JavaScript library for working with hexagonal grids.
 
 Running the tests
 -----------------
