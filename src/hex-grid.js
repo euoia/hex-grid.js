@@ -157,8 +157,8 @@ module.exports = (function () {
 
 	/**
 	 * Returns whether a coordinate is within the grid boundaries.
-	 * @param {number} x The x coordinate.
-	 * @param {number} y The y coordinate.
+	 * @param {number} x The X coordinate.
+	 * @param {number} y The Y coordinate.
 	 * @return {bool} Whether the coordinate is within the boundaries of the
 	 * grid.
 	 */
@@ -171,8 +171,8 @@ module.exports = (function () {
 
 	/**
 	 * Gets a specific tile by its x and y coordinates.
-	 * @param {number} x The x coordinate.
-	 * @param {number} y The y coordinate.
+	 * @param {number} x The X coordinate.
+	 * @param {number} y The Y coordinate.
 	 * @return {tile|null} The tile. Null if not a valid coordinate.
 	 */
 	HexGrid.prototype.getTileByCoords = function(x, y) {

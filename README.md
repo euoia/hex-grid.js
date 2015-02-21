@@ -101,8 +101,8 @@ grid.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| x | <code>number</code> | The x coordinate. |
-| y | <code>number</code> | The y coordinate. |
+| x | <code>number</code> | The X coordinate. |
+| y | <code>number</code> | The Y coordinate. |
 
 <a name="module_hex-grid--HexGrid#getTileByCoords"></a>
 #### hexGrid.getTileByCoords(x, y) ⇒ <code>tile</code> \| <code>null</code>
@@ -112,8 +112,8 @@ Gets a specific tile by its x and y coordinates.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| x | <code>number</code> | The x coordinate. |
-| y | <code>number</code> | The y coordinate. |
+| x | <code>number</code> | The X coordinate. |
+| y | <code>number</code> | The Y coordinate. |
 
 <a name="module_hex-grid--HexGrid#getTileIterator"></a>
 #### hexGrid.getTileIterator() ⇒ <code>object</code>
