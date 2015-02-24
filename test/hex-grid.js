@@ -195,9 +195,10 @@ describe('HexGrid', function() {
 		});
 	}
 
-	// TODO: Run for each configuration.
 	gridTests('pointy-topped', 'odd-r');
+	gridTests('pointy-topped', 'even-r');
 	gridTests('flat-topped', 'odd-q');
+	gridTests('flat-topped', 'even-q');
 
 	function pointyToppedTests(layout) {
 		describe('pointy-topped tests: ' + layout, function() {
@@ -272,27 +273,32 @@ describe('HexGrid', function() {
 					['southwest', 'northeast']
 				];
 
-				for (var dirIdx = 0; dirIdx < dirs.length; dirIdx += 1) {
-					var dir1 = dirs[dirIdx][0];
-					var dir2 = dirs[dirIdx][1];
+				dirs.forEach(function (dir) {
+					var startingTileCoords = [
+						{x: 5, y: 5},
+						{x: 6, y: 5},
+						{x: 5, y: 6},
+						{x: 6, y: 6},
+					];
 
+					startingTileCoords.forEach(function (coord) {
+						it('(from ' + coord.x + ', ' + coord.y + ') should be the same after moving ' +
+							dir[0] + ' then ' + dir[1], function() {
+							var tile = hexGrid.getTileByCoords(coord.x, coord.y);
+							var neighbour = hexGrid.getNeighbourById(tile.id, dir[0]);
+							var originalTile = hexGrid.getNeighbourById(neighbour.id, dir[1]);
+							expect(originalTile).to.eql(tile);
+						});
 
-					it('should be the same after moving ' + dir1 + ' then ' + dir2, function() {
-						var tile = hexGrid.getTileByCoords(5, 5);
-						var neighbour = hexGrid.getNeighbourById(tile.id, dir1);
-						var originalTile = hexGrid.getNeighbourById(neighbour.id, dir2);
-
-						expect(originalTile).to.eql(tile);
+						it('(from ' + coord.x + ', ' + coord.y + ') should be the same after moving ' +
+							dir[1] + ' then ' + dir[0], function() {
+							var tile = hexGrid.getTileByCoords(coord.x, coord.y);
+							var neighbour = hexGrid.getNeighbourById(tile.id, dir[1]);
+							var originalTile = hexGrid.getNeighbourById(neighbour.id, dir[0]);
+							expect(originalTile).to.eql(tile);
+						});
 					});
-
-					it('should be the same after moving ' + dir2 + ' then ' + dir1, function() {
-						var tile = hexGrid.getTileByCoords(5, 5);
-						var neighbour = hexGrid.getNeighbourById(tile.id, dir2);
-						var originalTile = hexGrid.getNeighbourById(neighbour.id, dir1);
-
-						expect(originalTile).to.eql(tile);
-					});
-				}
+				});
 			});
 		});
 	}
@@ -333,7 +339,7 @@ describe('HexGrid', function() {
 				it('should return null when out of bounds', function() {
 					assert.equal(null, hexGrid.getNeighbourByCoords(0, 0, 'north'));
 					assert.equal(null, hexGrid.getNeighbourByCoords(19, 0, 'southeast'));
-					assert.equal(null, hexGrid.getNeighbourByCoords(1, 9, 'southeast'));
+					assert.equal(null, hexGrid.getNeighbourByCoords(1, 10, 'southeast'));
 				});
 
 				it('should be able to go north from tile (5,5)', function() {
@@ -363,45 +369,33 @@ describe('HexGrid', function() {
 					['southwest', 'northeast']
 				];
 
-				for (var dirIdx = 0; dirIdx < dirs.length; dirIdx += 1) {
-					var dir1 = dirs[dirIdx][0];
-					var dir2 = dirs[dirIdx][1];
+				dirs.forEach(function (dir) {
+					var startingTileCoords = [
+						{x: 5, y: 5},
+						{x: 6, y: 5},
+						{x: 5, y: 6},
+						{x: 6, y: 6},
+					];
 
+					startingTileCoords.forEach(function (coord) {
+						it('(from ' + coord.x + ', ' + coord.y + ') should be the same after moving ' +
+							dir[0] + ' then ' + dir[1], function() {
+							var tile = hexGrid.getTileByCoords(coord.x, coord.y);
+							var neighbour = hexGrid.getNeighbourById(tile.id, dir[0]);
+							var originalTile = hexGrid.getNeighbourById(neighbour.id, dir[1]);
+							expect(originalTile).to.eql(tile);
+						});
 
-					it('should be the same after moving ' + dir1 + ' then ' + dir2, function() {
-						var tile = hexGrid.getTileByCoords(5, 5);
-						var neighbour1 = hexGrid.getNeighbourById(
-							tile.id,
-							dir1
-						);
+						it('(from ' + coord.x + ', ' + coord.y + ') should be the same after moving ' +
+							dir[1] + ' then ' + dir[0], function() {
+							var tile = hexGrid.getTileByCoords(coord.x, coord.y);
+							var neighbour = hexGrid.getNeighbourById(tile.id, dir[1]);
+							var originalTile = hexGrid.getNeighbourById(neighbour.id, dir[0]);
 
-						assert.deepEqual(
-							tile,
-							hexGrid.getNeighbourById(
-								neighbour1.id,
-								dir2
-							),
-							'Did not get original tile after moving ' + dir1 + ' then ' + dir2
-						);
+							expect(originalTile).to.eql(tile);
+						});
 					});
-
-					it('should be the same after moving ' + dir2 + ' then ' + dir1, function() {
-						var tile = hexGrid.getTileByCoords(5, 5);
-
-						var neighbour2 = hexGrid.getNeighbourById(
-							tile.id,
-							dir2
-						);
-						assert.deepEqual(
-							tile,
-							hexGrid.getNeighbourById(
-								neighbour2.id,
-								dir1
-							),
-							'Did not get original tile after moving ' + dir2 + ' then ' + dir1
-						);
-					});
-				}
+				});
 			});
 
 			describe('getNeighbourByCoords', function() {
@@ -424,35 +418,184 @@ describe('HexGrid', function() {
 					assert.equal(hexGrid.getNeighbourById(secondTile.id, 'north'), firstTile);
 				});
 			});
-
-			describe('getPositionByCoords', function() {
-				it('should return (1,0.5) for (1,0)', function() {
-					expect(hexGrid.getPositionByCoords(1, 0)).to.eql({x: 1, y: 0.5});
-				});
-
-				it('should return (0,2) for (0,2)', function() {
-					expect(hexGrid.getPositionByCoords(0, 2)).to.eql({x: 0, y: 2});
-				});
-			});
-
-			describe('getPositionById', function() {
-				it('should return (5,5.5) for (5,5)', function() {
-					var tile = hexGrid.getTileByCoords(5, 5);
-					expect(hexGrid.getPositionById(tile.id)).to.eql({x: 5, y: 5.5});
-				});
-
-				it('should return (4,4) for (4,4)', function() {
-					var tile = hexGrid.getTileByCoords(4, 4);
-					expect(hexGrid.getPositionById(tile.id)).to.eql({x: 4, y: 4});
-				});
-			});
 		});
 	}
 
-	// TODO: Run for even-r as well.
 	pointyToppedTests('odd-r');
+	pointyToppedTests('even-r');
 
-	// TODO: Run for even-q as well.
 	flatToppedTests('odd-q');
+	flatToppedTests('even-q');
 
+	describe ('flat-topped odd-q', function() {
+		var hexGrid;
+		beforeEach(function() {
+			hexGrid = new HexGrid({
+				'width': 20,
+				'height': 10,
+				'orientation': 'flat-topped',
+				'layout': 'odd-q',
+				tileFactory: tileFactory
+			});
+		});
+
+		describe('getPositionByCoords', function() {
+			it('should be correct for (0,0)', function() {
+				expect(hexGrid.getPositionByCoords(0, 0)).to.eql({x: 0, y: 0});
+			});
+
+			it('should be correct for (1,0)', function() {
+				expect(hexGrid.getPositionByCoords(1, 0)).to.eql({x: 1, y: 0.5});
+			});
+
+			it('should be correct for (1,1)', function() {
+				expect(hexGrid.getPositionByCoords(1, 1)).to.eql({x: 1, y: 1.5});
+			});
+
+			it('should be correct for (0,1)', function() {
+				expect(hexGrid.getPositionByCoords(0, 1)).to.eql({x: 0, y: 1});
+			});
+		});
+
+		describe('getPositionById', function() {
+			it('should be correct for (5,5)', function() {
+				var tile = hexGrid.getTileByCoords(5, 5);
+				expect(hexGrid.getPositionById(tile.id)).to.eql({x: 5, y: 5.5});
+			});
+
+			it('should be correct for (4,4)', function() {
+				var tile = hexGrid.getTileByCoords(4, 4);
+				expect(hexGrid.getPositionById(tile.id)).to.eql({x: 4, y: 4});
+			});
+		});
+	});
+
+	describe ('flat-topped even-q', function() {
+		var hexGrid;
+		beforeEach(function() {
+			hexGrid = new HexGrid({
+				'width': 20,
+				'height': 10,
+				'orientation': 'flat-topped',
+				'layout': 'even-q',
+				tileFactory: tileFactory
+			});
+		});
+
+		describe('getPositionByCoords', function() {
+			it('should be correct for (0,0)', function() {
+				expect(hexGrid.getPositionByCoords(0, 0)).to.eql({x: 0, y: 0.5});
+			});
+
+			it('should be correct for (1,0)', function() {
+				expect(hexGrid.getPositionByCoords(1, 0)).to.eql({x: 1, y: 0});
+			});
+
+			it('should be correct for (1,1)', function() {
+				expect(hexGrid.getPositionByCoords(1, 1)).to.eql({x: 1, y: 1});
+			});
+
+			it('should be correct for (0,1)', function() {
+				expect(hexGrid.getPositionByCoords(0, 1)).to.eql({x: 0, y: 1.5});
+			});
+		});
+
+		describe('getPositionById', function() {
+			it('should be correct for (3,3)', function() {
+				var tile = hexGrid.getTileByCoords(3, 3);
+				expect(hexGrid.getPositionById(tile.id)).to.eql({x: 3, y: 3});
+			});
+
+			it('should be correct for (4,4)', function() {
+				var tile = hexGrid.getTileByCoords(4, 4);
+				expect(hexGrid.getPositionById(tile.id)).to.eql({x: 4, y: 4.5});
+			});
+		});
+	});
+
+	describe ('pointy-topped odd-r', function() {
+		var hexGrid;
+		beforeEach(function() {
+			hexGrid = new HexGrid({
+				'width': 20,
+				'height': 10,
+				'orientation': 'pointy-topped',
+				'layout': 'odd-r',
+				tileFactory: tileFactory
+			});
+		});
+
+		describe('getPositionByCoords', function() {
+			it('should be correct for (0,0)', function() {
+				expect(hexGrid.getPositionByCoords(0, 0)).to.eql({x: 0, y: 0});
+			});
+
+			it('should be correct for (1,0)', function() {
+				expect(hexGrid.getPositionByCoords(1, 0)).to.eql({x: 1, y: 0});
+			});
+
+			it('should be correct for (1,1)', function() {
+				expect(hexGrid.getPositionByCoords(1, 1)).to.eql({x: 1.5, y: 1});
+			});
+
+			it('should be correct for (0,1)', function() {
+				expect(hexGrid.getPositionByCoords(0, 1)).to.eql({x: 0.5, y: 1});
+			});
+		});
+
+		describe('getPositionById', function() {
+			it('should be correct for (3,3)', function() {
+				var tile = hexGrid.getTileByCoords(3, 3);
+				expect(hexGrid.getPositionById(tile.id)).to.eql({x: 3.5, y: 3});
+			});
+
+			it('should be correct for (4,4)', function() {
+				var tile = hexGrid.getTileByCoords(4, 4);
+				expect(hexGrid.getPositionById(tile.id)).to.eql({x: 4, y: 4});
+			});
+		});
+	});
+
+	describe ('pointy-topped even-r', function() {
+		var hexGrid;
+		beforeEach(function() {
+			hexGrid = new HexGrid({
+				'width': 20,
+				'height': 10,
+				'orientation': 'pointy-topped',
+				'layout': 'even-r',
+				tileFactory: tileFactory
+			});
+		});
+
+		describe('getPositionByCoords', function() {
+			it('should be correct for (0,0)', function() {
+				expect(hexGrid.getPositionByCoords(0, 0)).to.eql({x: 0.5, y: 0});
+			});
+
+			it('should be correct for (1,0)', function() {
+				expect(hexGrid.getPositionByCoords(1, 0)).to.eql({x: 1.5, y: 0});
+			});
+
+			it('should be correct for (1,1)', function() {
+				expect(hexGrid.getPositionByCoords(1, 1)).to.eql({x: 1, y: 1});
+			});
+
+			it('should be correct for (0,1)', function() {
+				expect(hexGrid.getPositionByCoords(0, 1)).to.eql({x: 0, y: 1});
+			});
+		});
+
+		describe('getPositionById', function() {
+			it('should be correct for (3,3)', function() {
+				var tile = hexGrid.getTileByCoords(3, 3);
+				expect(hexGrid.getPositionById(tile.id)).to.eql({x: 3, y: 3});
+			});
+
+			it('should be correct for (4,4)', function() {
+				var tile = hexGrid.getTileByCoords(4, 4);
+				expect(hexGrid.getPositionById(tile.id)).to.eql({x: 4.5, y: 4});
+			});
+		});
+	});
 });

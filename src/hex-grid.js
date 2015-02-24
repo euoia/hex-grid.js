@@ -297,7 +297,38 @@ module.exports = (function () {
 			}
 			break;
 		case 'even-q':
-			throw new Error('getNeighbourByCoords not implemented for even-q.');
+			// Flat-top.
+			switch (dir) {
+			case 'north':
+				return this.getTileByCoords(x, y - 1);
+			case 'northeast':
+				// On even col Idx, y does not change.
+				if (x % 2 === 0) {
+					return this.getTileByCoords(x + 1, y);
+				}
+				return this.getTileByCoords(x + 1, y - 1);
+			case 'southeast':
+				// On odd col Idx, y does not change.
+				if (x % 2 === 1) {
+					return this.getTileByCoords(x + 1, y);
+				}
+				return this.getTileByCoords(x + 1, y + 1);
+			case 'south':
+				return this.getTileByCoords(x, y + 1);
+			case 'southwest':
+				// On odd col Idx, y does not change.
+				if (x % 2 === 1) {
+					return this.getTileByCoords(x - 1, y);
+				}
+				return this.getTileByCoords(x - 1, y + 1);
+			case 'northwest':
+				// On even col Idx, y does not change.
+				if (x % 2 === 0) {
+					return this.getTileByCoords(x - 1, y);
+				}
+				return this.getTileByCoords(x - 1, y - 1);
+			}
+			break;
 		case 'odd-r':
 			// Pointy-top.
 			switch (dir) {
@@ -311,10 +342,10 @@ module.exports = (function () {
 				return this.getTileByCoords(x + 1, y);
 			case 'southeast':
 				// On even rows, x doesn't change.
-				if (x % 2 === 0) {
+				if (y % 2 === 0) {
 					return this.getTileByCoords(x, y + 1);
 				}
-				return this.getTileByCoords(x, y + 1);
+				return this.getTileByCoords(x + 1, y + 1);
 			case 'south':
 				return this.getTileByCoords(x, y + 1);
 			case 'southwest':
@@ -326,15 +357,48 @@ module.exports = (function () {
 			case 'west':
 				return this.getTileByCoords(x - 1, y);
 			case 'northwest':
-				// On even rows, x doesn't change.
-				if (x % 2 === 0) {
+				// On odd rows, x doesn't change.
+				if (y % 2 === 1) {
 					return this.getTileByCoords(x, y - 1);
 				}
 				return this.getTileByCoords(x - 1, y - 1);
 			}
 			break;
 		case 'even-r':
-			throw new Error('getNeighbourByCoords not implemented for even-r.');
+			// Pointy-top.
+			switch (dir) {
+			case 'northeast':
+				// On odd rows, x doesn't change.
+				if (y % 2 === 1) {
+					return this.getTileByCoords(x, y - 1);
+				}
+				return this.getTileByCoords(x + 1, y - 1);
+			case 'east':
+				return this.getTileByCoords(x + 1, y);
+			case 'southeast':
+				// On odd rows, x doesn't change.
+				if (y %  2 === 1) {
+					return this.getTileByCoords(x, y + 1);
+				}
+				return this.getTileByCoords(x + 1, y + 1);
+			case 'south':
+				return this.getTileByCoords(x, y + 1);
+			case 'southwest':
+				// On even rows, x doesn't change.
+				if (y % 2 === 0) {
+					return this.getTileByCoords(x, y + 1);
+				}
+				return this.getTileByCoords(x - 1, y + 1);
+			case 'west':
+				return this.getTileByCoords(x - 1, y);
+			case 'northwest':
+				// On even rows, x doesn't change.
+				if (y % 2 === 0) {
+					return this.getTileByCoords(x, y - 1);
+				}
+				return this.getTileByCoords(x - 1, y - 1);
+			}
+			break;
 		}
 
 	};
@@ -366,7 +430,15 @@ module.exports = (function () {
 		switch (_layout) {
 		// Flat top.
 		case 'odd-q':
+			// Odd columns are offset by half.
 			if (x % 2 === 1) {
+				yPos = y + 0.5;
+			}
+			break;
+
+		case 'even-q':
+			// Even columns are offset by half.
+			if (x % 2 === 0) {
 				yPos = y + 0.5;
 			}
 			break;
@@ -375,6 +447,14 @@ module.exports = (function () {
 		case 'odd-r':
 			// Odd rows are offset by half.
 			if (y % 2 === 1) {
+				xPos = x + 0.5;
+			}
+
+			break;
+
+		case 'even-r':
+			// Even rows are offset by half.
+			if (y % 2 === 0) {
 				xPos = x + 0.5;
 			}
 
