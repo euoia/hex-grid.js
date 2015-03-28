@@ -5,14 +5,6 @@ A JavaScript library for working with hexagonal grids.
 With inspiration from
 [http://www.redblobgames.com/grids/hexagons](http://www.redblobgames.com/grids/hexagons).
 
-Running the tests
------------------
-After installing development dependencies using `npm install` you should be
-able to run the tests using:
-```
-mocha
-```
-
 Library
 -------
 <a name="module_hex-grid"></a>
@@ -193,3 +185,9 @@ Gets the position of a tile by its ID.
 | tileId | <code>string</code> | The tile's ID. |
 
 
+Running the tests
+-----------------
+After installing development dependencies using `npm install`:
+```
+mocha
+```
