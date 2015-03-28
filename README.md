@@ -5,8 +5,8 @@ A JavaScript library for working with hexagonal grids.
 With inspiration from
 [http://www.redblobgames.com/grids/hexagons](http://www.redblobgames.com/grids/hexagons).
 
-Library
--------
+API documentation
+-----------------
 <a name="module_hex-grid"></a>
 ## hex-grid
 Exports a constructor taking an options object.
