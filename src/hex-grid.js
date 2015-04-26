@@ -32,16 +32,6 @@ module.exports = (function () {
 	* @typicalname HexGrid
 	*/
 
-	var _width = null;
-	var _height = null;
-	var _tiles = null;
-	var _tileFactory = null;
-	var _orientation = null;
-	var _layout = null;
-
-	// Mapping from tile.id to tileIdx.
-	var _tileIdMap = null;
-
 	/**
 	 * A mapping from the map orientation to an array of valid neighbouring
 	 * directions for a tile.
@@ -121,21 +111,23 @@ module.exports = (function () {
 				'be one of: ' + _validLayouts[options.orientation]);
 		}
 
-		_width = options.width;
-		_height = options.height;
-		_tileFactory = options.tileFactory;
-		_orientation = options.orientation;
-		_layout = options.layout;
+		// Mapping from tile.id to tileIdx.
+		this.tileIdMap = null;
+
+		this.width = options.width;
+		this.height = options.height;
+		this.orientation = options.orientation;
+		this.layout = options.layout;
 
 		// Initialize each tile on the map.
-		_tileIdMap = {};
-		_tiles = new Array(_width * _height);
-		var numTiles = _tiles.length;
+		this.tileIdMap = {};
+		this.tiles = new Array(this.width * this.height);
+		var numTiles = this.tiles.length;
 		var tile;
 		for (var tileIdx = 0; tileIdx < numTiles; tileIdx += 1) {
-			tile = _tileFactory.newTile();
-			_tiles[tileIdx] = tile;
-			_tileIdMap[tile.id] = tileIdx;
+			tile = options.tileFactory.newTile();
+			this.tiles[tileIdx] = tile;
+			this.tileIdMap[tile.id] = tileIdx;
 		}
 	};
 
@@ -144,7 +136,7 @@ module.exports = (function () {
 	 * @return {number} The width of the grid.
 	 */
 	HexGrid.prototype.getWidth = function() {
-		return _width;
+		return this.width;
 	};
 
 	/**
@@ -152,7 +144,7 @@ module.exports = (function () {
 	 * @return {number} The height of the grid.
 	 */
 	HexGrid.prototype.getHeight = function() {
-		return _height;
+		return this.height;
 	};
 
 	/**
@@ -163,9 +155,9 @@ module.exports = (function () {
 	 * grid.
 	 */
 	HexGrid.prototype.isWithinBoundaries = function(x, y) {
-		return x <= _width - 1 &&
+		return x <= this.width - 1 &&
 			x >= 0 &&
-			y <= _height - 1 &&
+			y <= this.height - 1 &&
 			y >= 0;
 	};
 
@@ -181,20 +173,20 @@ module.exports = (function () {
 		}
 
 		if (this.isWithinBoundaries(x, y)) {
-			return _tiles[(y * _width) + x];
+			return this.tiles[(y * this.width) + x];
 		}
 
 		return null;
 	};
 
-	var TileIterator = function() {
+	var TileIterator = function(hexGrid) {
 		var tileIdx = -0;
 		this.next = function() {
-			if (tileIdx >= _tiles.length) {
+			if (tileIdx >= hexGrid.tiles.length) {
 				return null;
 			}
 
-			var tile = _tiles[tileIdx];
+			var tile = hexGrid.tiles[tileIdx];
 			tileIdx += 1;
 			return tile;
 		};
@@ -206,7 +198,7 @@ module.exports = (function () {
 	 * @return {object} The iterator object.
 	 */
 	HexGrid.prototype.getTileIterator = function() {
-		return new TileIterator();
+		return new TileIterator(this);
 	};
 
 	/**
@@ -214,7 +206,7 @@ module.exports = (function () {
 	 * @return {bool} Whether the direction is valid.
 	 */
 	HexGrid.prototype.isValidDirection = function(dir) {
-		if (_validDirs[_orientation].indexOf(dir) === -1) {
+		if (_validDirs[this.orientation].indexOf(dir) === -1) {
 			return false;
 		}
 
@@ -227,14 +219,14 @@ module.exports = (function () {
 	 * @return {object|null} An object with x and y properties.
 	 */
 	HexGrid.prototype.getCoordsById = function(tileId) {
-		var tileIdx = _tileIdMap[tileId];
+		var tileIdx = this.tileIdMap[tileId];
 		if (tileIdx === undefined) {
 			return null;
 		}
 
 		return {
-			x: tileIdx % _width,
-			y: Math.floor(tileIdx / _width)
+			x: tileIdx % this.width,
+			y: Math.floor(tileIdx / this.width)
 		};
 	};
 
@@ -244,12 +236,12 @@ module.exports = (function () {
 	 * @return {object|null} The tile.
 	 */
 	HexGrid.prototype.getTileById = function(tileId) {
-		var tileIdx = _tileIdMap[tileId];
+		var tileIdx = this.tileIdMap[tileId];
 		if (tileIdx === undefined) {
 			throw new Error('Not a valid tileId');
 		}
 
-		return _tiles[tileIdx];
+		return this.tiles[tileIdx];
 	};
 
 	/**
@@ -266,7 +258,7 @@ module.exports = (function () {
 		}
 
 		// TODO: It might be good to reduce this using maths.
-		switch (_layout) {
+		switch (this.layout) {
 		case 'odd-q':
 			// Flat-top.
 			switch (dir) {
@@ -427,7 +419,7 @@ module.exports = (function () {
 		var xPos = x,
 			yPos = y;
 
-		switch (_layout) {
+		switch (this.layout) {
 		// Flat top.
 		case 'odd-q':
 			// Odd columns are offset by half.
@@ -461,7 +453,7 @@ module.exports = (function () {
 			break;
 		default:
 			throw new Error(
-				'getPositionByCoords is not implemented for ' + _layout + '.');
+				'getPositionByCoords is not implemented for ' + this.layout + '.');
 		}
 
 		return {

@@ -38,6 +38,39 @@ describe('HexGrid', function() {
 			expect(4).to.equal(4);
 			expect(createGrid).to.throwError();
 		});
+
+		it('should allow multiple objects', function() {
+			var firstGrid = new HexGrid({
+				'width': 10,
+				'height': 10,
+				'orientation': 'flat-topped',
+				'layout': 'odd-q',
+				tileFactory: tileFactory
+			});
+
+			var secondGrid = new HexGrid({
+				'width': 20,
+				'height': 10,
+				'orientation': 'flat-topped',
+				'layout': 'odd-q',
+				tileFactory: tileFactory
+			});
+
+			expect(firstGrid.getWidth()).to.equal(10);
+			expect(secondGrid.getWidth()).to.equal(20);
+
+			var thirdGrid = new HexGrid({
+				'width': 5,
+				'height': 5,
+				'orientation': 'flat-topped',
+				'layout': 'odd-q',
+				tileFactory: tileFactory
+			});
+
+			expect(firstGrid.getWidth()).to.equal(10);
+			expect(secondGrid.getWidth()).to.equal(20);
+			expect(thirdGrid.getWidth()).to.equal(5);
+		});
 	});
 
 	function gridTests(orientation, layout) {
@@ -596,6 +629,34 @@ describe('HexGrid', function() {
 				var tile = hexGrid.getTileByCoords(4, 4);
 				expect(hexGrid.getPositionById(tile.id)).to.eql({x: 4.5, y: 4});
 			});
+		});
+	});
+
+	describe('tiles', function() {
+		var hexGrid;
+		beforeEach(function () {
+			hexGrid = new HexGrid({
+				'width': 20,
+				'height': 10,
+				'orientation': 'pointy-topped',
+				'layout': 'even-r',
+				tileFactory: tileFactory
+			});
+		});
+
+		it('should be accessible', function() {
+			expect(hexGrid.tiles).to.be.ok();
+		});
+
+		it('should return an array of Tiles', function() {
+			expect(hexGrid.tiles.length).to.equal(200);
+			expect(hexGrid.tiles[0].type).to.equal('testTile');
+		});
+
+		it('should return an array of Tiles that can be modified', function() {
+			var firstTile = hexGrid.tiles[0];
+			firstTile.testProperty = 'test';
+			expect(firstTile.testProperty).to.equal('test');
 		});
 	});
 });
