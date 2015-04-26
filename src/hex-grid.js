@@ -414,6 +414,10 @@ module.exports = (function () {
 	 */
 	HexGrid.prototype.getNeighboursById = function(tileId) {
 		var coords = this.getCoordsById(tileId);
+		if (coords === null) {
+			throw new Error('Invalid tile ID: ' + tileId);
+		}
+
 		return _validDirs[this.orientation].map(function (dir) {
 			return this.getNeighbourByCoords(coords.x, coords.y, dir);
 		}.bind(this)).filter(function (tile) {
