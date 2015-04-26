@@ -659,4 +659,37 @@ describe('HexGrid', function() {
 			expect(firstTile.testProperty).to.equal('test');
 		});
 	});
+
+	describe('getNeighboursById', function() {
+		var hexGrid;
+		beforeEach(function () {
+			hexGrid = new HexGrid({
+				'width': 5,
+				'height': 5,
+				'orientation': 'pointy-topped',
+				'layout': 'even-r',
+				tileFactory: tileFactory
+			});
+		});
+
+		it('should return an array of 6 tiles for a middle tile', function() {
+			var tile = hexGrid.getTileByCoords(1, 1);
+			var neighbours = hexGrid.getNeighboursById(tile.id);
+			neighbours.forEach(function (neighbour) {
+				expect(neighbour.type).to.equal('testTile');
+			});
+
+			expect(neighbours.length).to.equal(6);
+		});
+
+		it('should return an array of 3 tiles for a corner tile', function() {
+			var tile = hexGrid.getTileByCoords(0, 0);
+			var neighbours = hexGrid.getNeighboursById(tile.id);
+			neighbours.forEach(function (neighbour) {
+				expect(neighbour.type).to.equal('testTile');
+			});
+
+			expect(neighbours.length).to.equal(3);
+		});
+	});
 });

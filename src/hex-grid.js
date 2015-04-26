@@ -408,6 +408,20 @@ module.exports = (function () {
 	};
 
 	/**
+	 * Gets all neighbours of a tile given the tile's ID.
+	 * @param {string} tileId The tile's ID.
+	 * @return {object|null} The neighbouring tile.
+	 */
+	HexGrid.prototype.getNeighboursById = function(tileId) {
+		var coords = this.getCoordsById(tileId);
+		return _validDirs[this.orientation].map(function (dir) {
+			return this.getNeighbourByCoords(coords.x, coords.y, dir);
+		}.bind(this)).filter(function (tile) {
+			return tile !== null;
+		});
+	};
+
+	/**
 	 * Gets the position of a tile by its coordinates. Due to the way
 	 * hexagonal grids work, the position of half of the tiles are offset by
 	 * 0.5.
