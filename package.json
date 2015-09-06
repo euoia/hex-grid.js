@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "builddocs": "jsdoc2md -t docs/README.hbs src/hex-grid.js > README.md"
+    "builddocs": "./node_modules/.bin/jsdoc2md -t docs/README.hbs src/hex-grid.js > README.md"
   },
   "repository": {
     "type": "git",
@@ -31,7 +31,8 @@
   },
   "homepage": "https://github.com/euoia/hex-grid.js",
   "devDependencies": {
-    "mocha": "2.1.0",
-    "expect.js": "0.3.1"
+    "expect.js": "0.3.1",
+    "jsdoc-to-markdown": "^1.1.1",
+    "mocha": "2.1.0"
   }
 }
