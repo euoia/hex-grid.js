@@ -238,7 +238,7 @@ module.exports = (function () {
 	HexGrid.prototype.getTileById = function(tileId) {
 		var tileIdx = this.tileIdMap[tileId];
 		if (tileIdx === undefined) {
-			throw new Error('Not a valid tileId');
+			throw new Error('Not a valid tileId: ' + tileId);
 		}
 
 		return this.tiles[tileIdx];
@@ -404,13 +404,17 @@ module.exports = (function () {
 	 */
 	HexGrid.prototype.getNeighbourById = function(tileId, dir) {
 		var coords = this.getCoordsById(tileId);
+		if (coords === null) {
+			throw new Error('Invalid tile ID: ' + tileId);
+		}
+
 		return this.getNeighbourByCoords(coords.x, coords.y, dir);
 	};
 
 	/**
 	 * Gets all neighbours of a tile given the tile's ID.
 	 * @param {string} tileId The tile's ID.
-	 * @return {object|null} The neighbouring tile.
+	 * @return {object[]} The neighbouring tiles.
 	 */
 	HexGrid.prototype.getNeighboursById = function(tileId) {
 		var coords = this.getCoordsById(tileId);
@@ -488,6 +492,122 @@ module.exports = (function () {
 	HexGrid.prototype.getPositionById = function(tileId) {
 		var coords = this.getCoordsById(tileId);
 		return this.getPositionByCoords(coords.x, coords.y);
+	};
+
+	/**
+	 * Gets all shortest paths from a given starting tile.
+	 *
+	 * @param {string} tileId The tile's ID.
+	 * @param {object} options An options object.
+	 * @param {number} options.maxCost The maximum allowed cost of a path,
+	 * or POSITIVE_INFINITY if not specified. If specified, a pathCost function
+	 * must be provided.
+	 * @param {number|function} options.moveCost The cost of moving from one
+	 * tile to another. If a function is provided, it is called like
+	 * `options.pathCost(fromTile, toTile)` and it should return the cost of
+	 * moving from fromTile to toTile. Defaults to 1.
+	 * @return {object} An object where the keys are the final tileId in a path
+	 * and the values are Path objects. The Path object looks like this:
+	 * {
+	 *     tileIds: [tileId1, tileId2, ..., tileIdN],
+	 *     cost: 0
+	 * }
+	 *
+	 * The tileIds are the tile IDs traversed in order, including the starting
+	 * and final tile.
+	 *
+	 * The cost it the total cost of traversing the path. The cost of each step
+	 * of the path is determined by calling options.pathCost(fromTile, toTile),
+	 * or 0 if options.pathCost is not supplied.
+	 *
+	 * The zero-length path from a tile to itself is not returned.
+	 */
+	HexGrid.prototype.getShortestPathsFromTileId = function(tileId, options) {
+		if (typeof(tileId) !== 'string') {
+			throw new Error('tileId must be a string, got: ' + tileId);
+		}
+
+		options = options || {};
+		var maxPathCost = options.maxCost;
+		if (maxPathCost === undefined) {
+			maxPathCost = Number.POSITIVE_INFINITY;
+		}
+
+		var moveCost = options.moveCost;
+		if (moveCost === undefined) {
+			moveCost = 1;
+		}
+
+		// Start with the input tile as the frontier tile and explore from there.
+		var frontierTiles = [this.getTileById(tileId)];
+
+		// For each tile, record the previous tile.
+		var from = {};
+		from[tileId] = null;
+
+		// For each destination tile store a Path object.
+		var path = {};
+
+		while (frontierTiles.length) {
+			var frontierTile = frontierTiles.pop();
+			if (path[frontierTile.id] === undefined) {
+				path[frontierTile.id] = {
+					tileIds: [frontierTile.id],
+					cost: 0
+				};
+			}
+
+			this.getNeighboursById(frontierTile.id).forEach(function (neighbourTile) {
+				// Path is too costly.
+				if (path[frontierTile.id].cost > maxPathCost) {
+					return;
+				}
+
+				// Already found a path to tile.id. Breadth-first search
+				// guarantees it is shorter.
+				if (from[neighbourTile.id] !== undefined) {
+					return;
+				}
+
+				// Tile is not pathable.
+				if (typeof(options.isPathable) === 'function' &&
+					options.isPathable(neighbourTile) === false
+				) {
+					return;
+				}
+
+
+				var cost = null;
+				if (typeof moveCost === 'function') {
+					cost = moveCost(frontierTile, neighbourTile);
+					if (typeof cost !== 'number') {
+						throw new Error(
+							'options.moveCost(fromTile, toTile) did not return a number.'
+						);
+					}
+				} else {
+					cost = moveCost;
+				}
+
+				var pathCost = path[frontierTile.id].cost + cost;
+				if (pathCost > maxPathCost) {
+					return;
+				}
+
+				from[neighbourTile.id] = frontierTile.id;
+				path[neighbourTile.id] = {
+					cost: pathCost,
+					tileIds: path[frontierTile.id].tileIds.concat([neighbourTile.id])
+				};
+
+				frontierTiles.push(neighbourTile);
+			});
+		}
+
+		// Exclude the 0 length path.
+		delete path[tileId];
+
+		return path;
 	};
 
 	return HexGrid;

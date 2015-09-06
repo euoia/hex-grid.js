@@ -692,4 +692,74 @@ describe('HexGrid', function() {
 			expect(neighbours.length).to.equal(3);
 		});
 	});
+
+	describe('getPathsFromTileId', function() {
+		var hexGrid;
+		beforeEach(function () {
+			hexGrid = new HexGrid({
+				'width': 7,
+				'height': 7,
+				'orientation': 'pointy-topped',
+				'layout': 'even-r',
+				tileFactory: tileFactory
+			});
+		});
+
+		it('should return 6 paths when max length is 1', function() {
+			var tile = hexGrid.getTileByCoords(5, 5);
+			var paths = hexGrid.getShortestPathsFromTileId(
+				tile.id,
+				{
+					maxCost: 1
+				}
+			);
+
+			expect(Object.keys(paths).length).to.equal(6);
+		});
+
+		it('should return 18 paths when max length is 2', function() {
+			var tile = hexGrid.getTileByCoords(3, 3);
+			var paths = hexGrid.getShortestPathsFromTileId(
+				tile.id,
+				{
+					maxCost: 2
+				}
+			);
+			expect(Object.keys(paths).length).to.equal(18);
+		});
+
+		it('should return 17 paths when max cost is 2 and 1 outer tile is not pathable', function() {
+			var tile = hexGrid.getTileByCoords(3, 3);
+			var unpathableTile = hexGrid.getTileByCoords(5, 3);
+			unpathableTile.pathable = false;
+
+			var paths = hexGrid.getShortestPathsFromTileId(
+				tile.id,
+				{
+					maxCost: 2,
+					moveCost: function (fromTile, toTile) {
+						if (toTile.pathable === false) {
+							return Number.POSITIVE_INFINITY;
+						}
+
+						return 1;
+					}
+				}
+			);
+
+			expect(Object.keys(paths).length).to.equal(17);
+		});
+
+		it('should return 0 paths when max cost is 0', function() {
+			var tile = hexGrid.getTileByCoords(5, 5);
+			var paths = hexGrid.getShortestPathsFromTileId(
+				tile.id,
+				{
+					maxCost: 0
+				}
+			);
+
+			expect(Object.keys(paths).length).to.equal(0);
+		});
+	});
 });
