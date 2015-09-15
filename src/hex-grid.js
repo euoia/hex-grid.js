@@ -29,11 +29,18 @@ var _validLayouts = {
 	'pointy-topped': ['odd-r', 'even-r']
 };
 
+// Memoize a map from tileId to coordinates.
+var coordsMap = {};
+
 /**
  * Exports an object with functions that are useful for working with hexagonal grids.
  * @typicalname HexGrid
  */
 function validateSettings(settings) {
+  if (settings.validate !== true) {
+    return;
+  }
+
   if (_validDirs[settings.orientation] === undefined) {
     throw new Error('Invalid orientation: ' + settings.orientation +
       '. Must be one of: ' + Object.keys(_validDirs) + '.');
@@ -127,15 +134,23 @@ function isValidDirection(settings, dir) {
  * @throws Error If the tileId is not valid.
  */
 function getTileCoordinatesById(tileId) {
+  // Memoize this for performance.
+  var coords = coordsMap[tileId];
+  if (coords !== undefined) {
+    return coords;
+  }
+
   var match = tileId.match(/tile-(\d+)-(\d+)/);
   if (match.length !== 3) {
     throw new Error('Unrecognized tileId format: ' + tileId);
   }
 
-  return {
+  coords = coordsMap[tileId] = {
     x: parseInt(match[1], 10),
     y: parseInt(match[2], 10)
   };
+
+  return coords;
 }
 
 /**
