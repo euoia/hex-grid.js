@@ -475,7 +475,7 @@ function getShortestPathsFromTileId(settings, tileId, options) {
   var path = {};
 
   while (frontierTileIds.length) {
-    var frontierTileId = frontierTileIds.pop();
+    var frontierTileId = frontierTileIds.shift();
     if (path[frontierTileId] === undefined) {
       path[frontierTileId] = {
         tileIds: [frontierTileId],
