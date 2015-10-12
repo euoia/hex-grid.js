@@ -68,7 +68,7 @@ function getTileIds(settings) {
 
   var tileIds = [];
   for (var x = 0; x < settings.width; x += 1) {
-    for (var y = 0; y < settings.width; y += 1) {
+    for (var y = 0; y < settings.height; y += 1) {
       tileIds.push(getTileIdByCoordinates(settings, x, y));
     }
   }
