@@ -1,5 +1,5 @@
 // In the tests, we create objects but don't do anything with them:
-/*jshint nonew: false */
+/* eslint-env mocha */
 
 var assert = require('assert'),
 	expect = require('expect.js'),
@@ -311,7 +311,7 @@ describe('HexGrid', function() {
 						{x: 5, y: 5},
 						{x: 6, y: 5},
 						{x: 5, y: 6},
-						{x: 6, y: 6},
+						{x: 6, y: 6}
 					];
 
 					startingTileCoords.forEach(function (coord) {
@@ -407,7 +407,7 @@ describe('HexGrid', function() {
 						{x: 5, y: 5},
 						{x: 6, y: 5},
 						{x: 5, y: 6},
-						{x: 6, y: 6},
+						{x: 6, y: 6}
 					];
 
 					startingTileCoords.forEach(function (coord) {
