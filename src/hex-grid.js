@@ -2,7 +2,7 @@
  * A mapping from the map orientation to an array of valid neighbouring
  * directions for a tile.
  */
-var _validDirs = {
+var _validDirections = {
 	'flat-topped': [
 		'north',
 		'northeast',
@@ -33,17 +33,17 @@ var _validLayouts = {
 var coordsMap = {};
 
 /**
- * Exports an object with functions that are useful for working with hexagonal grids.
- * @typicalname HexGrid
+ * Validate that the grid settings.
+ * @param {Object} settings The hex grid settings.
  */
 function validateSettings(settings) {
   if (settings.validate !== true) {
     return;
   }
 
-  if (_validDirs[settings.orientation] === undefined) {
+  if (_validDirections[settings.orientation] === undefined) {
     throw new Error('Invalid orientation: ' + settings.orientation +
-      '. Must be one of: ' + Object.keys(_validDirs) + '.');
+      '. Must be one of: ' + Object.keys(_validDirections) + '.');
   }
 
   if (_validLayouts[settings.orientation].indexOf(settings.layout) === -1) {
@@ -85,6 +85,8 @@ function getTileIds(settings) {
  * grid.
  */
 function isWithinBoundaries(settings, x, y) {
+  validateSettings(settings);
+
   return x <= settings.width - 1 &&
     x >= 0 &&
     y <= settings.height - 1 &&
@@ -120,7 +122,7 @@ function getTileIdByCoordinates(settings, x, y) {
 function isValidDirection(settings, dir) {
   validateSettings(settings);
 
-  if (_validDirs[settings.orientation].indexOf(dir) === -1) {
+  if (_validDirections[settings.orientation].indexOf(dir) === -1) {
     return false;
   }
 
@@ -335,7 +337,7 @@ function getNeighbourIdsByTileId(settings, tileId) {
   validateSettings(settings);
 
   var coords = getTileCoordinatesById(tileId);
-  return _validDirs[settings.orientation].map(function (dir) {
+  return _validDirections[settings.orientation].map(function (dir) {
     return getNeighbourTileIdByCoordinates(settings, coords.x, coords.y, dir);
   }).filter(function (tile) {
     return tile !== null;
@@ -433,8 +435,8 @@ function getTilePositionById(settings, tileId) {
  * @return {object} An object where the keys are the final tileId in a path
  * and the values are Path objects. The Path object looks like this:
  * {
- *		 tileIds: [tileId1, tileId2, ..., tileIdN],
- *		 cost: 0
+ *    tileIds: [tileId1, tileId2, ..., tileIdN],
+ *    cost: 0
  * }
  *
  * The tileIds are the tile IDs traversed in order, including the starting
