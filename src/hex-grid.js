@@ -1,4 +1,4 @@
-// vim: noexpandtab:ts=2:sw=2
+// vim: expandtab:ts=2:sw=2
 
 /**
  * The valid directions for each orientation.
@@ -7,30 +7,30 @@
  * example.
  */
 var _validDirections = {
-	'flat-topped': [
-		'north',
-		'northeast',
-		'southeast',
-		'south',
-		'southwest',
-		'northwest'
-	],
-	'pointy-topped': [
-		'northeast',
-		'east',
-		'southeast',
-		'southwest',
-		'west',
-		'northwest'
-	]
+  'flat-topped': [
+    'north',
+    'northeast',
+    'southeast',
+    'south',
+    'southwest',
+    'northwest'
+  ],
+  'pointy-topped': [
+    'northeast',
+    'east',
+    'southeast',
+    'southwest',
+    'west',
+    'northwest'
+  ]
 };
 
 /**
  * The valid layouts for each orientation.
  */
 var _validLayouts = {
-	'flat-topped': ['odd-q', 'even-q'],
-	'pointy-topped': ['odd-r', 'even-r']
+  'flat-topped': ['odd-q', 'even-q'],
+  'pointy-topped': ['odd-r', 'even-r']
 };
 
 /**
@@ -42,7 +42,7 @@ var coordsMap = {};
 /**
  * Validate that the grid settings.
  * @param {object} settings The hex grid settings.
- * @param {boolean} settings.validate Whether to validate the grid settings.
+ * @param {boolean} [settings.validate=false] Whether to validate the grid settings.
  * This can be disabled for performance.
  * @param {number} settings.width The width of the grid, in hexes.
  * @param {number} settings.height The height of the grid, in hexes.
@@ -53,16 +53,16 @@ var coordsMap = {};
  * @throws Error When the settings are invalid.
  */
 function validateSettings(settings) {
-  if (settings.validate !== true) {
-    return;
+  if (typeof settings !== 'object') {
+    throw new Error('settings must be an object. Got ' + typeof settings);
   }
 
   if (typeof settings.width !== 'number') {
-    throw new Error('settings.width must be a number.');
+    throw new Error('settings.width must be a number. Got ' + typeof width);
   }
 
   if (typeof settings.height !== 'number') {
-    throw new Error('settings.height must be a number.');
+    throw new Error('settings.height must be a number. Got ' + typeof height);
   }
 
   if (_validLayouts[settings.orientation] === undefined) {
@@ -81,7 +81,9 @@ function validateSettings(settings) {
  * @param {object} settings The hex grid settings.
  */
 function getTileIds(settings) {
-  validateSettings(settings);
+  if (settings.validate !== false) {
+    validateSettings(settings);
+  }
 
   var tileIds = [];
   for (var x = 0; x < settings.width; x += 1) {
@@ -102,7 +104,15 @@ function getTileIds(settings) {
  * grid.
  */
 function isWithinBoundaries(settings, x, y) {
-  validateSettings(settings);
+  if (settings.validate !== false) {
+    validateSettings(settings);
+    if (typeof x !== 'number') {
+      throw new Error('x must be a number. Got ' + typeof x);
+    }
+    if (typeof y !== 'number') {
+      throw new Error('x must be a number. Got ' + typeof y);
+    }
+  }
 
   return x <= settings.width - 1 &&
     x >= 0 &&
@@ -118,10 +128,14 @@ function isWithinBoundaries(settings, x, y) {
  * @return {tile|null} The tile. Null if not a valid coordinate.
  */
 function getTileIdByCoordinates(settings, x, y) {
-  validateSettings(settings);
-
-  if (typeof x !== 'number' || typeof y !== 'number') {
-    throw new Error('x and y must be integers');
+  if (settings.validate !== false) {
+    validateSettings(settings);
+    if (typeof x !== 'number') {
+      throw new Error('x must be a number. Got ' + typeof x);
+    }
+    if (typeof y !== 'number') {
+      throw new Error('x must be a number. Got ' + typeof y);
+    }
   }
 
   if (isWithinBoundaries(settings, x, y) === false) {
@@ -134,25 +148,35 @@ function getTileIdByCoordinates(settings, x, y) {
 /**
  * Whether a given direction is valid for this map layout.
  * @param {object} settings The hex grid settings.
+ * @param {string} direction The direction to check.
  * @return {bool} Whether the direction is valid.
  */
-function isValidDirection(settings, dir) {
-  validateSettings(settings);
-
-  if (_validDirections[settings.orientation].indexOf(dir) === -1) {
-    return false;
+function isValidDirection(settings, direction) {
+  if (settings.validate !== false) {
+    validateSettings(settings);
+    if (typeof direction !== 'string') {
+      throw new Error('direction must be a string. Got ' + typeof direction);
+    }
   }
 
-  return true;
+  return (_validDirections[settings.orientation].indexOf(direction) >= 0);
 }
 
 /**
  * Gets the coordinates of a tile given its ID.
+ * @param {object} settings The hex grid settings.
  * @param {string} tileId The ID of the tile.
  * @return {object|null} An object with x and y properties.
  * @throws Error If the tileId is not valid.
  */
-function getTileCoordinatesById(tileId) {
+function getTileCoordinatesById(settings, tileId) {
+  if (settings.validate !== false) {
+    validateSettings(settings);
+    if (typeof tileId !== 'string') {
+      throw new Error('tileId must be a string. Got ' + typeof tileId);
+    }
+  }
+
   // Use the cached version if possible.
   var coords = coordsMap[tileId];
   if (coords !== undefined) {
@@ -160,7 +184,7 @@ function getTileCoordinatesById(tileId) {
   }
 
   var match = tileId.match(/tile-(\d+)-(\d+)/);
-  if (match.length !== 3) {
+  if (match === null || match.length !== 3) {
     throw new Error('Unrecognized tileId format: ' + tileId);
   }
 
@@ -182,10 +206,11 @@ function getTileCoordinatesById(tileId) {
  * @return {object|null} The neighbouring tile.
  */
 function getNeighbourTileIdByCoordinates(settings, x, y, dir) {
-  validateSettings(settings);
-
-  if (settings.validate && isValidDirection(settings, dir) === false) {
-    throw new Error('Not a valid direction: ' + dir);
+  if (settings.validate !== false) {
+    validateSettings(settings);
+    if (isValidDirection(settings, dir) === false) {
+      throw new Error('Not a valid direction: ' + dir);
+    }
   }
 
   // TODO: It might be good to reduce this using maths.
@@ -329,31 +354,37 @@ function getNeighbourTileIdByCoordinates(settings, x, y, dir) {
  * Gets a tile's neighbour given the tile's ID and a direction.
  * @param {object} settings The grid settings.
  * @param {string} tileId The tile's ID.
- * @param {string} dir A direction. One of: north, northeast, east,
+ * @param {string} direction A direction. One of: north, northeast, east,
  * southeast, south, southwest, west, northwest.
  * @return {object|null} The neighbouring tile.
  */
-function getNeighbourIdByTileId(settings, tileId, dir) {
-  validateSettings(settings);
-
-  var coords = getTileCoordinatesById(settings, tileId);
-  if (coords === null) {
-    throw new Error('Invalid tileId: ' + tileId);
+function getNeighbourIdByTileId(settings, tileId, direction) {
+  if (settings.validate !== false) {
+    validateSettings(settings);
+    if (typeof tileId !== 'string') {
+      throw new Error('tileId must be a string. Got ' + typeof tileId);
+    }
+    if (typeof direction !== 'string') {
+      throw new Error('dir must be a string. Got ' + typeof direction);
+    }
   }
 
-  return getNeighbourTileIdByCoordinates(settings, coords.x, coords.y, dir);
+  var coords = getTileCoordinatesById(settings, tileId);
+  return getNeighbourTileIdByCoordinates(settings, coords.x, coords.y, direction);
 }
 
 /**
- * Gets all neighbours of a tile given the tile's ID.
+ * Gets IDs all neighbours of a tile given the tile's ID.
  * @param {object} settings The grid settings.
  * @param {string} tileId The tile's ID.
- * @return {object[]} The neighbouring tiles.
+ * @return {number[]} The neighbouring tiles' IDs.
  */
 function getNeighbourIdsByTileId(settings, tileId) {
-  validateSettings(settings);
+  if (settings.validate !== false) {
+    validateSettings(settings);
+  }
 
-  var coords = getTileCoordinatesById(tileId);
+  var coords = getTileCoordinatesById(settings, tileId);
   return _validDirections[settings.orientation].map(function (dir) {
     return getNeighbourTileIdByCoordinates(settings, coords.x, coords.y, dir);
   }).filter(function (tile) {
@@ -370,7 +401,9 @@ function getNeighbourIdsByTileId(settings, tileId) {
  * @return {object} An object with x and y properties.
  */
 function getTilePositionByCoords(settings, x, y) {
-  validateSettings(settings);
+  if (settings.validate !== false) {
+    validateSettings(settings);
+  }
 
   if (typeof x !== 'number' || typeof y !== 'number') {
     throw new Error('x and y must be integers');
@@ -429,7 +462,7 @@ function getTilePositionByCoords(settings, x, y) {
  * @return {object} An object with x and y properties.
  */
 function getTilePositionById(settings, tileId) {
-  var coords = getTileCoordinatesById(tileId);
+  var coords = getTileCoordinatesById(settings, tileId);
   return getTilePositionByCoords(settings, coords.x, coords.y);
 }
 
@@ -466,10 +499,11 @@ function getTilePositionById(settings, tileId) {
  * The zero-length path from a tile to itself is not returned.
  */
 function getShortestPathsFromTileId(settings, tileId, options) {
-  validateSettings(settings);
-
-  if (settings.validate && typeof(tileId) !== 'string') {
-    throw new Error('tileId must be a string, got: ' + typeof tileId);
+  if (settings.validate !== false) {
+    validateSettings(settings);
+    if (typeof(tileId) !== 'string') {
+      throw new Error('tileId must be a string, got: ' + typeof tileId);
+    }
   }
 
   options = options || {};
@@ -555,6 +589,7 @@ function getShortestPathsFromTileId(settings, tileId, options) {
 }
 
 module.exports = {
+  validateSettings: validateSettings,
   getTileIds: getTileIds,
   isWithinBoundaries: isWithinBoundaries,
   getTileIdByCoordinates: getTileIdByCoordinates,

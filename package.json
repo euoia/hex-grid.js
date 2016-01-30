@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "mocha",
-    "builddocs": "./node_modules/.bin/jsdoc2md -t docs/README.hbs src/hex-grid.js > README.md"
+    "builddocs": "./node_modules/.bin/jsdoc2md -t docs/README.hbs src/hex-grid.js > README.md",
+    "coverage": "istanbul cover ./node_modules/.bin/_mocha -- test/hex-grid.js"
   },
   "repository": {
     "type": "git",
@@ -33,7 +34,8 @@
   "devDependencies": {
     "eslint": "^1.4.1",
     "expect.js": "^0.3.1",
+    "istanbul": "^0.4.2",
     "jsdoc-to-markdown": "^1.1.1",
-    "mocha": "^2.1.0"
+    "mocha": "^2.4.5"
   }
 }
