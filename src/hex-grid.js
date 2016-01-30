@@ -1,6 +1,10 @@
+// vim: noexpandtab:ts=2:sw=2
+
 /**
- * A mapping from the map orientation to an array of valid neighbouring
- * directions for a tile.
+ * The valid directions for each orientation.
+ *
+ * The pointy-topped orientation does not have the concept of "north" for
+ * example.
  */
 var _validDirections = {
 	'flat-topped': [
@@ -22,33 +26,35 @@ var _validDirections = {
 };
 
 /**
- * Mapping from map orientation to an array of valid layouts.
+ * The valid layouts for each orientation.
  */
 var _validLayouts = {
 	'flat-topped': ['odd-q', 'even-q'],
 	'pointy-topped': ['odd-r', 'even-r']
 };
 
-// Memoize a map from tileId to coordinates.
+/**
+ * Memoize the computation of coordinates from tile IDs to reduce costly
+ * regexp.
+ */
 var coordsMap = {};
 
 /**
  * Validate that the grid settings.
- * @param {Object} settings The hex grid settings.
+ * @param {object} settings The hex grid settings.
+ * @param {boolean} settings.validate Whether to validate the grid settings.
+ * This can be disabled for performance.
+ * @param {number} settings.width The width of the grid, in hexes.
+ * @param {number} settings.height The height of the grid, in hexes.
+ * @param {string} settings.orientation The orientation of the hexes, either
+ * "flat-topped" or "pointy-topped".
+ * @param {string} settings.layout The layout of the hexes. For flat-topped,
+ * either "odd-q" or "even-q". For pointy-topped, either "odd-r" or "even-r".
+ * @throws Error When the settings are invalid.
  */
 function validateSettings(settings) {
   if (settings.validate !== true) {
     return;
-  }
-
-  if (_validDirections[settings.orientation] === undefined) {
-    throw new Error('Invalid orientation: ' + settings.orientation +
-      '. Must be one of: ' + Object.keys(_validDirections) + '.');
-  }
-
-  if (_validLayouts[settings.orientation].indexOf(settings.layout) === -1) {
-    throw new Error('Invalid layout for given orientation: ' + settings.layout +
-      '. Must be one of: ' + _validLayouts[settings.orientation] + '.');
   }
 
   if (typeof settings.width !== 'number') {
@@ -58,10 +64,21 @@ function validateSettings(settings) {
   if (typeof settings.height !== 'number') {
     throw new Error('settings.height must be a number.');
   }
+
+  if (_validLayouts[settings.orientation] === undefined) {
+    throw new Error('Invalid orientation: ' + settings.orientation +
+      '. Must be one of: ' + Object.keys(_validLayouts) + '.');
+  }
+
+  if (_validLayouts[settings.orientation].indexOf(settings.layout) === -1) {
+    throw new Error('Invalid layout for given orientation: ' + settings.layout +
+      '. Must be one of: ' + _validLayouts[settings.orientation] + '.');
+  }
 }
 
 /**
  * Returns an array of tileIds.
+ * @param {object} settings The hex grid settings.
  */
 function getTileIds(settings) {
   validateSettings(settings);
@@ -78,7 +95,7 @@ function getTileIds(settings) {
 
 /**
  * Returns whether a coordinate is within the grid boundaries.
- * @param {object} settings The grid settings.
+ * @param {object} settings The hex grid settings.
  * @param {number} x The X coordinate.
  * @param {number} y The Y coordinate.
  * @return {bool} Whether the coordinate is within the boundaries of the
@@ -95,7 +112,7 @@ function isWithinBoundaries(settings, x, y) {
 
 /**
  * Gets the tileId given the coordinates.
- * @param {object} settings The grid settings.
+ * @param {object} settings The hex grid settings.
  * @param {number} x The X coordinate.
  * @param {number} y The Y coordinate.
  * @return {tile|null} The tile. Null if not a valid coordinate.
@@ -116,7 +133,7 @@ function getTileIdByCoordinates(settings, x, y) {
 
 /**
  * Whether a given direction is valid for this map layout.
- * @param {object} settings The grid settings.
+ * @param {object} settings The hex grid settings.
  * @return {bool} Whether the direction is valid.
  */
 function isValidDirection(settings, dir) {
@@ -136,7 +153,7 @@ function isValidDirection(settings, dir) {
  * @throws Error If the tileId is not valid.
  */
 function getTileCoordinatesById(tileId) {
-  // Memoize this for performance.
+  // Use the cached version if possible.
   var coords = coordsMap[tileId];
   if (coords !== undefined) {
     return coords;
@@ -167,7 +184,7 @@ function getTileCoordinatesById(tileId) {
 function getNeighbourTileIdByCoordinates(settings, x, y, dir) {
   validateSettings(settings);
 
-  if (isValidDirection(settings, dir) === false) {
+  if (settings.validate && isValidDirection(settings, dir) === false) {
     throw new Error('Not a valid direction: ' + dir);
   }
 
@@ -417,7 +434,7 @@ function getTilePositionById(settings, tileId) {
 }
 
 /**
- * Gets all shortest paths from a given starting tile.
+ * Gets shortest paths from a given starting tile to all other reachable tiles.
  *
  * @param {object} settings The grid settings.
  * @param {string} tileId The tile's ID.
@@ -451,7 +468,7 @@ function getTilePositionById(settings, tileId) {
 function getShortestPathsFromTileId(settings, tileId, options) {
   validateSettings(settings);
 
-  if (typeof(tileId) !== 'string') {
+  if (settings.validate && typeof(tileId) !== 'string') {
     throw new Error('tileId must be a string, got: ' + typeof tileId);
   }
 
