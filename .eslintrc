@@ -2,11 +2,5 @@
     "env": {
 		"commonjs": true
     },
-	"ecmaFeatures": {
-	},
-	"plugins": [
-	],
-	"rules": {
-	},
     "extends": "eslint:recommended"
 }
