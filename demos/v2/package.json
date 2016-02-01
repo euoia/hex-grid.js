@@ -1,0 +1,23 @@
+{
+  "name": "hex-grid-v2-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "watch": "babel --watch --out-file bundle.js"
+  },
+  "author": "James Pickard <james.pickard@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.4.5",
+    "babel-core": "^6.4.5",
+    "babel-loader": "^6.2.1",
+    "webpack": "^1.12.12"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ],
+    "sourceMaps": "both"
+  }
+}
