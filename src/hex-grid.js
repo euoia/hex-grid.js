@@ -42,8 +42,6 @@ var coordsMap = {};
 /**
  * Validate that the grid settings.
  * @param {object} settings The hex grid settings.
- * @param {boolean} [settings.validate=false] Whether to validate the grid settings.
- * This can be disabled for performance.
  * @param {number} settings.width The width of the grid, in hexes.
  * @param {number} settings.height The height of the grid, in hexes.
  * @param {string} settings.orientation The orientation of the hexes, either
