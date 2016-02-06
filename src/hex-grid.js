@@ -33,6 +33,8 @@ var _validLayouts = {
   'pointy-topped': ['odd-r', 'even-r']
 };
 
+var _validShapes = ['rectangle', 'parallelogram'];
+
 /**
  * Memoize the computation of coordinates from tile IDs to reduce costly
  * regexp.
@@ -48,6 +50,8 @@ var coordsMap = {};
  * "flat-topped" or "pointy-topped".
  * @param {string} settings.layout The layout of the hexes. For flat-topped,
  * either "odd-q" or "even-q". For pointy-topped, either "odd-r" or "even-r".
+ * @param {string} [settings.shape=rectangle] The shape of the hex grid. Should
+ * be either "rectangle" or "parallelogram".
  * @throws Error When the settings are invalid.
  */
 function validateSettings(settings) {
@@ -71,6 +75,10 @@ function validateSettings(settings) {
   if (_validLayouts[settings.orientation].indexOf(settings.layout) === -1) {
     throw new Error('Invalid layout for given orientation: ' + settings.layout +
       '. Must be one of: ' + _validLayouts[settings.orientation] + '.');
+  }
+
+  if (settings.shape && _validShapes.indexOf(settings.shape) === -1) {
+    throw new Error('Invalid shape. Must be one of: ' + _validShapes);
   }
 }
 
@@ -211,141 +219,59 @@ function getNeighbourTileIdByCoordinates(settings, x, y, dir) {
     }
   }
 
-  // TODO: It might be good to reduce this using maths.
-  switch (settings.layout) {
-  case 'odd-q':
-    // Flat-top.
-    switch (dir) {
-    case 'north':
-      return getTileIdByCoordinates(settings, x, y - 1);
-    case 'northeast':
-      if (x % 2 === 0) {
-        return getTileIdByCoordinates(settings, x + 1, y - 1);
-      }
-      return getTileIdByCoordinates(settings, x + 1, y);
-    case 'southeast':
-      if (x % 2 === 1) {
-        return getTileIdByCoordinates(settings, x + 1, y + 1);
-      }
-      return getTileIdByCoordinates(settings, x + 1, y);
-    case 'south':
-      return getTileIdByCoordinates(settings, x, y + 1);
-    case 'southwest':
-      if (x % 2 === 1) {
-        return getTileIdByCoordinates(settings, x - 1, y + 1);
-      }
-      return getTileIdByCoordinates(settings, x - 1, y);
-    case 'northwest':
-      if (x % 2 === 0) {
-        return getTileIdByCoordinates(settings, x - 1, y - 1);
-      }
-      return getTileIdByCoordinates(settings, x - 1, y);
-    }
-    break;
-  case 'even-q':
-    // Flat-top.
-    switch (dir) {
-    case 'north':
-      return getTileIdByCoordinates(settings, x, y - 1);
-    case 'northeast':
-      // On even col Idx, y does not change.
-      if (x % 2 === 0) {
-        return getTileIdByCoordinates(settings, x + 1, y);
-      }
-      return getTileIdByCoordinates(settings, x + 1, y - 1);
-    case 'southeast':
-      // On odd col Idx, y does not change.
-      if (x % 2 === 1) {
-        return getTileIdByCoordinates(settings, x + 1, y);
-      }
-      return getTileIdByCoordinates(settings, x + 1, y + 1);
-    case 'south':
-      return getTileIdByCoordinates(settings, x, y + 1);
-    case 'southwest':
-      // On odd col Idx, y does not change.
-      if (x % 2 === 1) {
-        return getTileIdByCoordinates(settings, x - 1, y);
-      }
-      return getTileIdByCoordinates(settings, x - 1, y + 1);
-    case 'northwest':
-      // On even col Idx, y does not change.
-      if (x % 2 === 0) {
-        return getTileIdByCoordinates(settings, x - 1, y);
-      }
-      return getTileIdByCoordinates(settings, x - 1, y - 1);
-    }
-    break;
-  case 'odd-r':
-    // Pointy-top.
-    switch (dir) {
-    case 'northeast':
-      // On even rows, x doesn't change.
-      if (y % 2 === 0) {
-        return getTileIdByCoordinates(settings, x, y - 1);
-      }
-      return getTileIdByCoordinates(settings, x + 1, y - 1);
-    case 'east':
-      return getTileIdByCoordinates(settings, x + 1, y);
-    case 'southeast':
-      // On even rows, x doesn't change.
-      if (y % 2 === 0) {
-        return getTileIdByCoordinates(settings, x, y + 1);
-      }
-      return getTileIdByCoordinates(settings, x + 1, y + 1);
-    case 'south':
-      return getTileIdByCoordinates(settings, x, y + 1);
-    case 'southwest':
-      // On odd rows, x doesn't change.
-      if (y % 2 === 1) {
-        return getTileIdByCoordinates(settings, x, y + 1);
-      }
-      return getTileIdByCoordinates(settings, x - 1, y + 1);
-    case 'west':
-      return getTileIdByCoordinates(settings, x - 1, y);
-    case 'northwest':
-      // On odd rows, x doesn't change.
-      if (y % 2 === 1) {
-        return getTileIdByCoordinates(settings, x, y - 1);
-      }
-      return getTileIdByCoordinates(settings, x - 1, y - 1);
-    }
-    break;
-  case 'even-r':
-    // Pointy-top.
-    switch (dir) {
-    case 'northeast':
-      // On odd rows, x doesn't change.
-      if (y % 2 === 1) {
-        return getTileIdByCoordinates(settings, x, y - 1);
-      }
-      return getTileIdByCoordinates(settings, x + 1, y - 1);
-    case 'east':
-      return getTileIdByCoordinates(settings, x + 1, y);
-    case 'southeast':
-      // On odd rows, x doesn't change.
-      if (y %  2 === 1) {
-        return getTileIdByCoordinates(settings, x, y + 1);
-      }
-      return getTileIdByCoordinates(settings, x + 1, y + 1);
-    case 'south':
-      return getTileIdByCoordinates(settings, x, y + 1);
-    case 'southwest':
-      // On even rows, x doesn't change.
-      if (y % 2 === 0) {
-        return getTileIdByCoordinates(settings, x, y + 1);
-      }
-      return getTileIdByCoordinates(settings, x - 1, y + 1);
-    case 'west':
-      return getTileIdByCoordinates(settings, x - 1, y);
-    case 'northwest':
-      // On even rows, x doesn't change.
-      if (y % 2 === 0) {
-        return getTileIdByCoordinates(settings, x, y - 1);
-      }
-      return getTileIdByCoordinates(settings, x - 1, y - 1);
-    }
-    break;
+  var rowIsEven = (y % 2 === 0);
+  var colIsEven = (x % 2 === 0);
+
+  var xOffset = 0;
+  if (
+    settings.orientation === 'flat-topped' ||
+    (settings.layout === 'odd-r' && rowIsEven === false && (dir === 'northeast' || dir === 'southeast')) ||
+    (settings.layout === 'odd-r' && rowIsEven === true && (dir === 'northwest' || dir === 'southwest')) ||
+    (settings.layout === 'even-r' && rowIsEven === true && (dir === 'northeast' || dir === 'southeast')) ||
+    (settings.layout === 'even-r' && rowIsEven === false && (dir === 'northwest' || dir === 'southwest'))
+  ) {
+    xOffset = 1;
   }
+
+  var yOffset = 0;
+  if (
+    settings.orientation === 'pointy-topped' ||
+    (settings.layout === 'odd-q' && colIsEven === false && (dir === 'northeast' || dir === 'southeast')) ||
+    (settings.layout === 'odd-q' && colIsEven === true && (dir === 'northwest' || dir === 'southwest')) ||
+    (settings.layout === 'even-q' && colIsEven === true && (dir === 'northeast' || dir === 'southeast')) ||
+    (settings.layout === 'even-q' && colIsEven === false && (dir === 'northwest' || dir === 'southwest'))
+  ) {
+    yOffset = 1;
+  }
+
+  var xP = 0;
+  if (settings.shape  && settings.shape === 'parallelogram') {
+    if (rowIsEven) {
+      if (dir === 'north' || dir === 'northwest' || dir === 'northeast') {
+        xP = 1
+      } else {
+        xP = 0;
+      }
+    } else {
+      if (dir === 'south' || dir === 'southwest' || dir === 'southeast') {
+        xP = -1;
+      }
+    }
+  }
+
+  var offsets = {
+    'north': {x: 0, y: -1},
+    'east': {x: +1, y: 0},
+    'south': {x: 0, y: +1},
+    'west': {x: -1, y: 0},
+    'northeast': {x: xOffset + xP, y: yOffset * -1},
+    'southeast': {x: xOffset + xP, y: yOffset},
+    'southwest': {x: (xOffset * -1) + xP, y: yOffset},
+    'northwest': {x: (xOffset * -1) + xP, y: yOffset * -1}
+  };
+
+  var offset = offsets[dir];
+  return getTileIdByCoordinates(settings, x + offset.x, y + offset.y);
 }
 
 /**
@@ -407,22 +333,22 @@ function getTilePositionByCoords(settings, x, y) {
     throw new Error('x and y must be integers');
   }
 
-  var xPos = x,
-    yPos = y;
+  var xOffset = 0,
+    yOffset = 0;
 
   switch (settings.layout) {
   // Flat top.
   case 'odd-q':
     // Odd columns are offset by half.
     if (x % 2 === 1) {
-      yPos = y + 0.5;
+      yOffset += 0.5;
     }
     break;
 
   case 'even-q':
     // Even columns are offset by half.
     if (x % 2 === 0) {
-      yPos = y + 0.5;
+      yOffset += 0.5;
     }
     break;
 
@@ -430,7 +356,7 @@ function getTilePositionByCoords(settings, x, y) {
   case 'odd-r':
     // Odd rows are offset by half.
     if (y % 2 === 1) {
-      xPos = x + 0.5;
+      xOffset += 0.5;
     }
 
     break;
@@ -438,7 +364,7 @@ function getTilePositionByCoords(settings, x, y) {
   case 'even-r':
     // Even rows are offset by half.
     if (y % 2 === 0) {
-      xPos = x + 0.5;
+      xOffset += 0.5;
     }
 
     break;
@@ -447,9 +373,13 @@ function getTilePositionByCoords(settings, x, y) {
       'getTilePositionByCoords is not implemented for ' + settings.layout + '.');
   }
 
+  if (settings.shape && settings.shape === 'parallelogram') {
+    xOffset += Math.floor(y / 2);
+  }
+
   return {
-    x: xPos,
-    y: yPos
+    x: x + xOffset,
+    y: y + yOffset
   };
 }
 
@@ -534,7 +464,7 @@ function getShortestPathsFromTileId(settings, tileId, options) {
       };
     }
 
-    getNeighbourIdsByTileId(settings, frontierTileId).forEach(function (neighbourTileId) {
+    getNeighbourIdsByTileId(settings, frontierTileId).forEach(function expandSearch(neighbourTileId) {
       // Path is too costly.
       if (path[frontierTileId].cost > maxPathCost) {
         return;
@@ -586,6 +516,53 @@ function getShortestPathsFromTileId(settings, tileId, options) {
   return path;
 }
 
+function hasPath (settings, startTiles, endTiles, options) {
+  var i, j, frontierNeighbours;
+
+  var visited = {};
+
+  var endTilesObj = {};
+  for (i = 0; i < endTiles.length; i += 1) {
+    if (options.isPathable(endTiles[i])) {
+      endTilesObj[endTiles[i]] = true;
+    }
+  }
+
+  var frontierTiles = [];
+  for (i = 0; i < startTiles.length; i += 1) {
+    if (options.isPathable(startTiles[i])) {
+      frontierTiles.push(startTiles[i]);
+    }
+  }
+
+  while (frontierTiles.length > 0) {
+    for (i = 0; i < frontierTiles.length; i += 1) {
+      visited[frontierTiles[i]] = true;
+      if (endTilesObj[frontierTiles[i]] === true) {
+        return true;
+      }
+    }
+
+    frontierNeighbours = [];
+    for (i = 0; i < frontierTiles.length; i += 1) {
+      var neighbours = getNeighbourIdsByTileId(settings, frontierTiles[i]);
+
+      for (j = 0; j < neighbours.length; j += 1) {
+        if (options.isPathable(neighbours[j]) &&
+          frontierNeighbours.indexOf(neighbours[j]) === -1 &&
+          visited[neighbours[j]] === undefined
+        ) {
+          frontierNeighbours.push(neighbours[j]);
+        }
+      }
+    }
+
+    frontierTiles = frontierNeighbours;
+  }
+
+  return false;
+}
+
 module.exports = {
   validateSettings: validateSettings,
   getTileIds: getTileIds,
@@ -598,5 +575,6 @@ module.exports = {
   getNeighbourIdsByTileId: getNeighbourIdsByTileId,
   getTilePositionByCoords: getTilePositionByCoords,
   getTilePositionById: getTilePositionById,
-  getShortestPathsFromTileId: getShortestPathsFromTileId
+  getShortestPathsFromTileId: getShortestPathsFromTileId,
+  hasPath: hasPath
 };

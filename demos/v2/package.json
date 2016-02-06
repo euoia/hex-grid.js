@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "watch": "babel --watch --out-file bundle.js"
+    "watch": "webpack -w"
   },
   "author": "James Pickard <james.pickard@gmail.com>",
   "license": "ISC",

@@ -1,6 +1,10 @@
 {
-    "env": {
-		"commonjs": true
-    },
-    "extends": "eslint:recommended"
+  "env": {
+    "commonjs": true
+  },
+  "rules": {
+    "indent": [2, 2],
+    "no-mixed-spaces-and-tabs": [2]
+  },
+  "extends": "eslint:recommended"
 }

@@ -59,44 +59,90 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var hexWidth = 38; /* global SVG */
+	var hexWidth = 19; /* global SVG */
 
-	var hexHeight = 44;
+	var hexHeight = 22;
 
 	var grid = {
-	  width: 10,
-	  height: 15,
+	  width: 20,
+	  height: 20,
 	  orientation: 'pointy-topped',
-	  layout: 'odd-r'
+	  layout: 'odd-r',
+	  shape: 'parallelogram'
 	};
 
 	var main = SVG('main');
-	main.size(hexWidth * (grid.width + 2), hexHeight * (grid.height + 2));
+	main.size(hexWidth * (grid.width * 1.8), hexHeight * (grid.height + 2));
 
 	// Pointy top.
 	//const hex = main.polygon('25,0 75,0 100,50 75,100, 25,100, 0,50').fill('none').stroke({width: 0})
 
+	function toHexString(num) {
+	  return String('0' + num.toString(16)).slice(-2);
+	}
+
+	function fromHex(str) {
+	  return {
+	    red: parseInt(str.substr(1, 2), 16),
+	    green: parseInt(str.substr(3, 2), 16),
+	    blue: parseInt(str.substr(5, 2), 16)
+	  };
+	}
+
 	for (var x = 0; x < grid.width; x += 1) {
 	  var _loop = function _loop(y) {
 	    var hex = main.polygon('0,25 0,75 50,100 100,75 100,25 50,0').fill('none').stroke({ width: 4 });
-	    hex.width(38);
-	    hex.height(44);
-
-	    hex.mouseover(function () {
-	      hex.attr({ fill: '#60f' });
-	    });
+	    hex.width(hexWidth);
+	    hex.height(hexHeight);
+	    hex.attr({ id: _hexGrid2.default.getTileIdByCoordinates(grid, x, y) });
 
 	    var position = _hexGrid2.default.getTilePositionByCoords(grid, x, y);
 	    hex.dx(10 + hexWidth * position.x);
 	    hex.dy(10 + hexHeight * position.y * 0.75);
 	    hex.attr({ fill: '#f06' });
+
+	    hex.mouseover(function () {
+	      hex.attr({ fill: '#60f' });
+	    });
+
+	    hex.click(function () {
+	      var red = Math.random() * 255;
+	      var green = Math.random() * 255;
+	      var blue = Math.random() * 255;
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = _hexGrid2.default.getNeighbourIdsByTileId(grid, this.attr('id'))[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var tileId = _step.value;
+
+	          var neighbour = SVG.get(tileId);
+	          var colour = '#' + toHexString(red) + toHexString(green) + toHexString(blue);
+	          neighbour.attr({ fill: colour });
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
+	    });
 	  };
 
 	  for (var y = 0; y < grid.height; y += 1) {
 	    _loop(y);
 	  }
 	}
-	//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIm1haW4uanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7QUFHQSxJQUFNLFdBQVcsRUFBWDs7QUFDTixJQUFNLFlBQVksRUFBWjs7QUFFTixJQUFNLE9BQU87QUFDWCxTQUFPLEVBQVA7QUFDQSxVQUFRLEVBQVI7QUFDQSxlQUFhLGVBQWI7QUFDQSxVQUFRLE9BQVI7Q0FKSTs7QUFPTixJQUFNLE9BQU8sSUFBSSxNQUFKLENBQVA7QUFDTixLQUFLLElBQUwsQ0FBVSxZQUFZLEtBQUssS0FBTCxHQUFhLENBQWIsQ0FBWixFQUE2QixhQUFhLEtBQUssTUFBTCxHQUFjLENBQWQsQ0FBYixDQUF2Qzs7Ozs7QUFLQSxLQUFLLElBQUksSUFBSSxDQUFKLEVBQU8sSUFBSSxLQUFLLEtBQUwsRUFBWSxLQUFLLENBQUwsRUFBUTs2QkFDN0I7QUFDUCxRQUFNLE1BQU0sS0FBSyxPQUFMLENBQWEscUNBQWIsRUFBb0QsSUFBcEQsQ0FBeUQsTUFBekQsRUFBaUUsTUFBakUsQ0FBd0UsRUFBQyxPQUFPLENBQVAsRUFBekUsQ0FBTjtBQUNOLFFBQUksS0FBSixDQUFVLEVBQVY7QUFDQSxRQUFJLE1BQUosQ0FBVyxFQUFYOztBQUVBLFFBQUksU0FBSixDQUFjLFlBQVk7QUFDeEIsVUFBSSxJQUFKLENBQVMsRUFBQyxNQUFNLE1BQU4sRUFBVixFQUR3QjtLQUFaLENBQWQ7O0FBSUEsUUFBTSxXQUFXLGtCQUFRLHVCQUFSLENBQWdDLElBQWhDLEVBQXNDLENBQXRDLEVBQXlDLENBQXpDLENBQVg7QUFDTixRQUFJLEVBQUosQ0FBTyxLQUFLLFdBQVcsU0FBUyxDQUFULENBQXZCO0FBQ0EsUUFBSSxFQUFKLENBQU8sS0FBSyxZQUFZLFNBQVMsQ0FBVCxHQUFhLElBQXpCLENBQVo7QUFDQSxRQUFJLElBQUosQ0FBUyxFQUFDLE1BQU0sTUFBTixFQUFWO0lBYm9DOztBQUN0QyxPQUFLLElBQUksSUFBSSxDQUFKLEVBQU8sSUFBSSxLQUFLLE1BQUwsRUFBYSxLQUFLLENBQUwsRUFBUTtVQUFoQyxHQUFnQztHQUF6QztDQURGIiwiZmlsZSI6Im1haW4uanMiLCJzb3VyY2VSb290IjoiL1VzZXJzL2pwL0NvZGUvaGV4LWdyaWQvZGVtb3MvdjIiLCJzb3VyY2VzQ29udGVudCI6WyIvKiBnbG9iYWwgU1ZHICovXG5pbXBvcnQgaGV4R3JpZCBmcm9tICcuLi8uLi9zcmMvaGV4LWdyaWQuanMnO1xuXG5jb25zdCBoZXhXaWR0aCA9IDM4O1xuY29uc3QgaGV4SGVpZ2h0ID0gNDQ7XG5cbmNvbnN0IGdyaWQgPSB7XG4gIHdpZHRoOiAxMCxcbiAgaGVpZ2h0OiAxNSxcbiAgb3JpZW50YXRpb246ICdwb2ludHktdG9wcGVkJyxcbiAgbGF5b3V0OiAnb2RkLXInXG59O1xuXG5jb25zdCBtYWluID0gU1ZHKCdtYWluJyk7XG5tYWluLnNpemUoaGV4V2lkdGggKiAoZ3JpZC53aWR0aCArIDIpLCBoZXhIZWlnaHQgKiAoZ3JpZC5oZWlnaHQgKyAyKSk7XG5cbi8vIFBvaW50eSB0b3AuXG4vL2NvbnN0IGhleCA9IG1haW4ucG9seWdvbignMjUsMCA3NSwwIDEwMCw1MCA3NSwxMDAsIDI1LDEwMCwgMCw1MCcpLmZpbGwoJ25vbmUnKS5zdHJva2Uoe3dpZHRoOiAwfSlcblxuZm9yIChsZXQgeCA9IDA7IHggPCBncmlkLndpZHRoOyB4ICs9IDEpIHtcbiAgZm9yIChsZXQgeSA9IDA7IHkgPCBncmlkLmhlaWdodDsgeSArPSAxKSB7XG4gICAgY29uc3QgaGV4ID0gbWFpbi5wb2x5Z29uKCcwLDI1IDAsNzUgNTAsMTAwIDEwMCw3NSAxMDAsMjUgNTAsMCcpLmZpbGwoJ25vbmUnKS5zdHJva2Uoe3dpZHRoOiA0fSlcbiAgICBoZXgud2lkdGgoMzgpO1xuICAgIGhleC5oZWlnaHQoNDQpO1xuXG4gICAgaGV4Lm1vdXNlb3ZlcihmdW5jdGlvbiAoKSB7XG4gICAgICBoZXguYXR0cih7ZmlsbDogJyM2MGYnfSk7XG4gICAgfSk7XG5cbiAgICBjb25zdCBwb3NpdGlvbiA9IGhleEdyaWQuZ2V0VGlsZVBvc2l0aW9uQnlDb29yZHMoZ3JpZCwgeCwgeSk7XG4gICAgaGV4LmR4KDEwICsgaGV4V2lkdGggKiBwb3NpdGlvbi54KTtcbiAgICBoZXguZHkoMTAgKyBoZXhIZWlnaHQgKiBwb3NpdGlvbi55ICogMC43NSk7XG4gICAgaGV4LmF0dHIoe2ZpbGw6ICcjZjA2J30pO1xuICB9XG59XG4iXX0=
+	//# sourceMappingURL=data:application/json;base64,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Q3RDLE9BQUssSUFBSSxJQUFJLENBQUosRUFBTyxJQUFJLEtBQUssTUFBTCxFQUFhLEtBQUssQ0FBTCxFQUFRO1VBQWhDLEdBQWdDO0dBQXpDO0NBREYiLCJmaWxlIjoibWFpbi5qcyIsInNvdXJjZVJvb3QiOiIvVXNlcnMvanAvQ29kZS9oZXgtZ3JpZC9kZW1vcy92MiIsInNvdXJjZXNDb250ZW50IjpbIi8qIGdsb2JhbCBTVkcgKi9cbmltcG9ydCBoZXhHcmlkIGZyb20gJy4uLy4uL3NyYy9oZXgtZ3JpZC5qcyc7XG5cbmNvbnN0IGhleFdpZHRoID0gMTk7XG5jb25zdCBoZXhIZWlnaHQgPSAyMjtcblxuY29uc3QgZ3JpZCA9IHtcbiAgd2lkdGg6IDIwLFxuICBoZWlnaHQ6IDIwLFxuICBvcmllbnRhdGlvbjogJ3BvaW50eS10b3BwZWQnLFxuICBsYXlvdXQ6ICdvZGQtcicsXG4gIHNoYXBlOiAncGFyYWxsZWxvZ3JhbSdcbn07XG5cbmNvbnN0IG1haW4gPSBTVkcoJ21haW4nKTtcbm1haW4uc2l6ZShoZXhXaWR0aCAqIChncmlkLndpZHRoICogMS44KSwgaGV4SGVpZ2h0ICogKGdyaWQuaGVpZ2h0ICsgMikpO1xuXG4vLyBQb2ludHkgdG9wLlxuLy9jb25zdCBoZXggPSBtYWluLnBvbHlnb24oJzI1LDAgNzUsMCAxMDAsNTAgNzUsMTAwLCAyNSwxMDAsIDAsNTAnKS5maWxsKCdub25lJykuc3Ryb2tlKHt3aWR0aDogMH0pXG5cbmZ1bmN0aW9uIHRvSGV4U3RyaW5nKG51bSkge1xuICByZXR1cm4gU3RyaW5nKCcwJyArIG51bS50b1N0cmluZygxNikpLnNsaWNlKC0yKTtcbn1cblxuZnVuY3Rpb24gZnJvbUhleChzdHIpIHtcbiAgcmV0dXJuIHtcbiAgICByZWQ6IHBhcnNlSW50KHN0ci5zdWJzdHIoMSwgMiksIDE2KSxcbiAgICBncmVlbjogcGFyc2VJbnQoc3RyLnN1YnN0cigzLCAyKSwgMTYpLFxuICAgIGJsdWU6IHBhcnNlSW50KHN0ci5zdWJzdHIoNSwgMiksIDE2KVxuICB9XG59XG5cbmZvciAobGV0IHggPSAwOyB4IDwgZ3JpZC53aWR0aDsgeCArPSAxKSB7XG4gIGZvciAobGV0IHkgPSAwOyB5IDwgZ3JpZC5oZWlnaHQ7IHkgKz0gMSkge1xuICAgIGNvbnN0IGhleCA9IG1haW4ucG9seWdvbignMCwyNSAwLDc1IDUwLDEwMCAxMDAsNzUgMTAwLDI1IDUwLDAnKS5maWxsKCdub25lJykuc3Ryb2tlKHt3aWR0aDogNH0pXG4gICAgaGV4LndpZHRoKGhleFdpZHRoKTtcbiAgICBoZXguaGVpZ2h0KGhleEhlaWdodCk7XG4gICAgaGV4LmF0dHIoe2lkOiBoZXhHcmlkLmdldFRpbGVJZEJ5Q29vcmRpbmF0ZXMoZ3JpZCwgeCwgeSl9KTtcblxuICAgIGNvbnN0IHBvc2l0aW9uID0gaGV4R3JpZC5nZXRUaWxlUG9zaXRpb25CeUNvb3JkcyhncmlkLCB4LCB5KTtcbiAgICBoZXguZHgoMTAgKyBoZXhXaWR0aCAqIHBvc2l0aW9uLngpO1xuICAgIGhleC5keSgxMCArIGhleEhlaWdodCAqIHBvc2l0aW9uLnkgKiAwLjc1KTtcbiAgICBoZXguYXR0cih7ZmlsbDogJyNmMDYnfSk7XG5cbiAgICBoZXgubW91c2VvdmVyKGZ1bmN0aW9uICgpIHtcbiAgICAgIGhleC5hdHRyKHtmaWxsOiAnIzYwZid9KTtcbiAgICB9KTtcblxuICAgIGhleC5jbGljayhmdW5jdGlvbiAoKSB7XG4gICAgICBjb25zdCByZWQgPSBNYXRoLnJhbmRvbSgpICogMjU1O1xuICAgICAgY29uc3QgZ3JlZW4gPSBNYXRoLnJhbmRvbSgpICogMjU1O1xuICAgICAgY29uc3QgYmx1ZSA9IE1hdGgucmFuZG9tKCkgKiAyNTU7XG4gICAgICBmb3IgKGxldCB0aWxlSWQgb2YgaGV4R3JpZC5nZXROZWlnaGJvdXJJZHNCeVRpbGVJZChncmlkLCB0aGlzLmF0dHIoJ2lkJykpKSB7XG4gICAgICAgIGNvbnN0IG5laWdoYm91ciA9IFNWRy5nZXQodGlsZUlkKTtcbiAgICAgICAgY29uc3QgY29sb3VyID0gYCMke3RvSGV4U3RyaW5nKHJlZCl9JHt0b0hleFN0cmluZyhncmVlbil9JHt0b0hleFN0cmluZyhibHVlKX1gO1xuICAgICAgICBuZWlnaGJvdXIuYXR0cih7ZmlsbDogY29sb3VyfSk7XG4gICAgICB9XG4gICAgfSk7XG4gIH1cbn1cbiJdfQ==
 
 /***/ },
 /* 2 */
@@ -123,6 +169,8 @@
 	  'pointy-topped': ['odd-r', 'even-r']
 	};
 
+	var _validShapes = ['rectangle', 'parallelogram'];
+
 	/**
 	 * Memoize the computation of coordinates from tile IDs to reduce costly
 	 * regexp.
@@ -132,14 +180,14 @@
 	/**
 	 * Validate that the grid settings.
 	 * @param {object} settings The hex grid settings.
-	 * @param {boolean} [settings.validate=false] Whether to validate the grid settings.
-	 * This can be disabled for performance.
 	 * @param {number} settings.width The width of the grid, in hexes.
 	 * @param {number} settings.height The height of the grid, in hexes.
 	 * @param {string} settings.orientation The orientation of the hexes, either
 	 * "flat-topped" or "pointy-topped".
 	 * @param {string} settings.layout The layout of the hexes. For flat-topped,
 	 * either "odd-q" or "even-q". For pointy-topped, either "odd-r" or "even-r".
+	 * @param {string} [settings.shape=rectangle] The shape of the hex grid. Should
+	 * be either "rectangle" or "parallelogram".
 	 * @throws Error When the settings are invalid.
 	 */
 	function validateSettings(settings) {
@@ -161,6 +209,10 @@
 
 	  if (_validLayouts[settings.orientation].indexOf(settings.layout) === -1) {
 	    throw new Error('Invalid layout for given orientation: ' + settings.layout + '. Must be one of: ' + _validLayouts[settings.orientation] + '.');
+	  }
+
+	  if (settings.shape && _validShapes.indexOf(settings.shape) === -1) {
+	    throw new Error('Invalid shape. Must be one of: ' + _validShapes);
 	  }
 	}
 
@@ -298,141 +350,47 @@
 	    }
 	  }
 
-	  // TODO: It might be good to reduce this using maths.
-	  switch (settings.layout) {
-	    case 'odd-q':
-	      // Flat-top.
-	      switch (dir) {
-	        case 'north':
-	          return getTileIdByCoordinates(settings, x, y - 1);
-	        case 'northeast':
-	          if (x % 2 === 0) {
-	            return getTileIdByCoordinates(settings, x + 1, y - 1);
-	          }
-	          return getTileIdByCoordinates(settings, x + 1, y);
-	        case 'southeast':
-	          if (x % 2 === 1) {
-	            return getTileIdByCoordinates(settings, x + 1, y + 1);
-	          }
-	          return getTileIdByCoordinates(settings, x + 1, y);
-	        case 'south':
-	          return getTileIdByCoordinates(settings, x, y + 1);
-	        case 'southwest':
-	          if (x % 2 === 1) {
-	            return getTileIdByCoordinates(settings, x - 1, y + 1);
-	          }
-	          return getTileIdByCoordinates(settings, x - 1, y);
-	        case 'northwest':
-	          if (x % 2 === 0) {
-	            return getTileIdByCoordinates(settings, x - 1, y - 1);
-	          }
-	          return getTileIdByCoordinates(settings, x - 1, y);
-	      }
-	      break;
-	    case 'even-q':
-	      // Flat-top.
-	      switch (dir) {
-	        case 'north':
-	          return getTileIdByCoordinates(settings, x, y - 1);
-	        case 'northeast':
-	          // On even col Idx, y does not change.
-	          if (x % 2 === 0) {
-	            return getTileIdByCoordinates(settings, x + 1, y);
-	          }
-	          return getTileIdByCoordinates(settings, x + 1, y - 1);
-	        case 'southeast':
-	          // On odd col Idx, y does not change.
-	          if (x % 2 === 1) {
-	            return getTileIdByCoordinates(settings, x + 1, y);
-	          }
-	          return getTileIdByCoordinates(settings, x + 1, y + 1);
-	        case 'south':
-	          return getTileIdByCoordinates(settings, x, y + 1);
-	        case 'southwest':
-	          // On odd col Idx, y does not change.
-	          if (x % 2 === 1) {
-	            return getTileIdByCoordinates(settings, x - 1, y);
-	          }
-	          return getTileIdByCoordinates(settings, x - 1, y + 1);
-	        case 'northwest':
-	          // On even col Idx, y does not change.
-	          if (x % 2 === 0) {
-	            return getTileIdByCoordinates(settings, x - 1, y);
-	          }
-	          return getTileIdByCoordinates(settings, x - 1, y - 1);
-	      }
-	      break;
-	    case 'odd-r':
-	      // Pointy-top.
-	      switch (dir) {
-	        case 'northeast':
-	          // On even rows, x doesn't change.
-	          if (y % 2 === 0) {
-	            return getTileIdByCoordinates(settings, x, y - 1);
-	          }
-	          return getTileIdByCoordinates(settings, x + 1, y - 1);
-	        case 'east':
-	          return getTileIdByCoordinates(settings, x + 1, y);
-	        case 'southeast':
-	          // On even rows, x doesn't change.
-	          if (y % 2 === 0) {
-	            return getTileIdByCoordinates(settings, x, y + 1);
-	          }
-	          return getTileIdByCoordinates(settings, x + 1, y + 1);
-	        case 'south':
-	          return getTileIdByCoordinates(settings, x, y + 1);
-	        case 'southwest':
-	          // On odd rows, x doesn't change.
-	          if (y % 2 === 1) {
-	            return getTileIdByCoordinates(settings, x, y + 1);
-	          }
-	          return getTileIdByCoordinates(settings, x - 1, y + 1);
-	        case 'west':
-	          return getTileIdByCoordinates(settings, x - 1, y);
-	        case 'northwest':
-	          // On odd rows, x doesn't change.
-	          if (y % 2 === 1) {
-	            return getTileIdByCoordinates(settings, x, y - 1);
-	          }
-	          return getTileIdByCoordinates(settings, x - 1, y - 1);
-	      }
-	      break;
-	    case 'even-r':
-	      // Pointy-top.
-	      switch (dir) {
-	        case 'northeast':
-	          // On odd rows, x doesn't change.
-	          if (y % 2 === 1) {
-	            return getTileIdByCoordinates(settings, x, y - 1);
-	          }
-	          return getTileIdByCoordinates(settings, x + 1, y - 1);
-	        case 'east':
-	          return getTileIdByCoordinates(settings, x + 1, y);
-	        case 'southeast':
-	          // On odd rows, x doesn't change.
-	          if (y % 2 === 1) {
-	            return getTileIdByCoordinates(settings, x, y + 1);
-	          }
-	          return getTileIdByCoordinates(settings, x + 1, y + 1);
-	        case 'south':
-	          return getTileIdByCoordinates(settings, x, y + 1);
-	        case 'southwest':
-	          // On even rows, x doesn't change.
-	          if (y % 2 === 0) {
-	            return getTileIdByCoordinates(settings, x, y + 1);
-	          }
-	          return getTileIdByCoordinates(settings, x - 1, y + 1);
-	        case 'west':
-	          return getTileIdByCoordinates(settings, x - 1, y);
-	        case 'northwest':
-	          // On even rows, x doesn't change.
-	          if (y % 2 === 0) {
-	            return getTileIdByCoordinates(settings, x, y - 1);
-	          }
-	          return getTileIdByCoordinates(settings, x - 1, y - 1);
-	      }
-	      break;
+	  var rowIsEven = y % 2 === 0;
+	  var colIsEven = x % 2 === 0;
+
+	  var xOffset = 0;
+	  if (settings.orientation === 'flat-topped' || settings.layout === 'odd-r' && rowIsEven === false && (dir === 'northeast' || dir === 'southeast') || settings.layout === 'odd-r' && rowIsEven === true && (dir === 'northwest' || dir === 'southwest') || settings.layout === 'even-r' && rowIsEven === true && (dir === 'northeast' || dir === 'southeast') || settings.layout === 'even-r' && rowIsEven === false && (dir === 'northwest' || dir === 'southwest')) {
+	    xOffset = 1;
 	  }
+
+	  var yOffset = 0;
+	  if (settings.orientation === 'pointy-topped' || settings.layout === 'odd-q' && colIsEven === false && (dir === 'northeast' || dir === 'southeast') || settings.layout === 'odd-q' && colIsEven === true && (dir === 'northwest' || dir === 'southwest') || settings.layout === 'even-q' && colIsEven === true && (dir === 'northeast' || dir === 'southeast') || settings.layout === 'even-q' && colIsEven === false && (dir === 'northwest' || dir === 'southwest')) {
+	    yOffset = 1;
+	  }
+
+	  var xP = 0;
+	  if (settings.shape && settings.shape === 'parallelogram') {
+	    if (rowIsEven) {
+	      if (dir === 'north' || dir === 'northwest' || dir === 'northeast') {
+	        xP = 1;
+	      } else {
+	        xP = 0;
+	      }
+	    } else {
+	      if (dir === 'south' || dir === 'southwest' || dir === 'southeast') {
+	        xP = -1;
+	      }
+	    }
+	  }
+
+	  var offsets = {
+	    'north': { x: 0, y: -1 },
+	    'east': { x: +1, y: 0 },
+	    'south': { x: 0, y: +1 },
+	    'west': { x: -1, y: 0 },
+	    'northeast': { x: xOffset + xP, y: yOffset * -1 },
+	    'southeast': { x: xOffset + xP, y: yOffset },
+	    'southwest': { x: xOffset * -1 + xP, y: yOffset },
+	    'northwest': { x: xOffset * -1 + xP, y: yOffset * -1 }
+	  };
+
+	  var offset = offsets[dir];
+	  return getTileIdByCoordinates(settings, x + offset.x, y + offset.y);
 	}
 
 	/**
@@ -494,22 +452,22 @@
 	    throw new Error('x and y must be integers');
 	  }
 
-	  var xPos = x,
-	      yPos = y;
+	  var xOffset = 0,
+	      yOffset = 0;
 
 	  switch (settings.layout) {
 	    // Flat top.
 	    case 'odd-q':
 	      // Odd columns are offset by half.
 	      if (x % 2 === 1) {
-	        yPos = y + 0.5;
+	        yOffset += 0.5;
 	      }
 	      break;
 
 	    case 'even-q':
 	      // Even columns are offset by half.
 	      if (x % 2 === 0) {
-	        yPos = y + 0.5;
+	        yOffset += 0.5;
 	      }
 	      break;
 
@@ -517,7 +475,7 @@
 	    case 'odd-r':
 	      // Odd rows are offset by half.
 	      if (y % 2 === 1) {
-	        xPos = x + 0.5;
+	        xOffset += 0.5;
 	      }
 
 	      break;
@@ -525,7 +483,7 @@
 	    case 'even-r':
 	      // Even rows are offset by half.
 	      if (y % 2 === 0) {
-	        xPos = x + 0.5;
+	        xOffset += 0.5;
 	      }
 
 	      break;
@@ -533,9 +491,13 @@
 	      throw new Error('getTilePositionByCoords is not implemented for ' + settings.layout + '.');
 	  }
 
+	  if (settings.shape && settings.shape === 'parallelogram') {
+	    xOffset += Math.floor(y / 2);
+	  }
+
 	  return {
-	    x: xPos,
-	    y: yPos
+	    x: x + xOffset,
+	    y: y + yOffset
 	  };
 	}
 
@@ -620,7 +582,7 @@
 	      };
 	    }
 
-	    getNeighbourIdsByTileId(settings, frontierTileId).forEach(function (neighbourTileId) {
+	    getNeighbourIdsByTileId(settings, frontierTileId).forEach(function expandSearch(neighbourTileId) {
 	      // Path is too costly.
 	      if (path[frontierTileId].cost > maxPathCost) {
 	        return;

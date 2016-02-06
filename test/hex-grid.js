@@ -1,9 +1,8 @@
-// vim: noexpandtab:ts=2:sw=2
 /* eslint-env mocha, es6 */
 
 var
-	expect = require('expect.js'),
-	hexGrid = require('../src/hex-grid.js');
+  expect = require('expect.js'),
+  hexGrid = require('../src/hex-grid.js');
 
 describe('validateSettings', function() {
   var validSettings;
