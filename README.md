@@ -1,3 +1,5 @@
+![Travis CI status](https://travis-ci.org/euoia/hex-grid.js.svg?branch=master)
+
 hex-grid.js
 ===========
 A JavaScript library for working with hexagonal grids.
