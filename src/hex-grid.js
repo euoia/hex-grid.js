@@ -36,12 +36,6 @@ var _validLayouts = {
 var _validShapes = ['rectangle', 'parallelogram'];
 
 /**
- * Memoize the computation of coordinates from tile IDs to reduce costly
- * regexp.
- */
-var coordsMap = {};
-
-/**
  * Validate that the grid settings.
  * @param {object} settings The hex grid settings.
  * @param {number} settings.width The width of the grid, in hexes.
@@ -148,7 +142,8 @@ function getTileIdByCoordinates(settings, x, y) {
     return null;
   }
 
-  return 'tile-' + x.toString() + '-' + y.toString();
+  var id = y * settings.width + x;
+  return id;
 }
 
 /**
@@ -178,28 +173,15 @@ function isValidDirection(settings, direction) {
 function getTileCoordinatesById(settings, tileId) {
   if (settings.validate !== false) {
     validateSettings(settings);
-    if (typeof tileId !== 'string') {
-      throw new Error('tileId must be a string. Got ' + typeof tileId);
+    if (typeof tileId !== 'number') {
+      throw new Error('tileId must be a number. Got ' + typeof tileId);
     }
   }
 
-  // Use the cached version if possible.
-  var coords = coordsMap[tileId];
-  if (coords !== undefined) {
-    return coords;
-  }
-
-  var match = tileId.match(/tile-(\d+)-(\d+)/);
-  if (match === null || match.length !== 3) {
-    throw new Error('Unrecognized tileId format: ' + tileId);
-  }
-
-  coords = coordsMap[tileId] = {
-    x: parseInt(match[1], 10),
-    y: parseInt(match[2], 10)
+  return {
+    x: tileId % settings.width,
+    y: Math.floor(tileId / settings.width)
   };
-
-  return coords;
 }
 
 /**
@@ -285,8 +267,8 @@ function getNeighbourTileIdByCoordinates(settings, x, y, dir) {
 function getNeighbourIdByTileId(settings, tileId, direction) {
   if (settings.validate !== false) {
     validateSettings(settings);
-    if (typeof tileId !== 'string') {
-      throw new Error('tileId must be a string. Got ' + typeof tileId);
+    if (typeof tileId !== 'number') {
+      throw new Error('tileId must be a number. Got ' + typeof tileId);
     }
     if (typeof direction !== 'string') {
       throw new Error('dir must be a string. Got ' + typeof direction);
@@ -309,6 +291,42 @@ function getNeighbourIdsByTileId(settings, tileId) {
   }
 
   var coords = getTileCoordinatesById(settings, tileId);
+  if (settings.orientation === 'pointy-topped' && settings.shape === 'parallelogram') {
+    var neighbourIds = [];
+    if (coords.x > 0) {
+      // West.
+      neighbourIds.push(tileId - 1);
+
+      // Southwest.
+      if (coords.y < settings.height - 1) {
+        neighbourIds.push(tileId + settings.width - 1);
+      }
+
+    }
+
+    if (coords.x < settings.width - 1) {
+      // East.
+      neighbourIds.push(tileId + 1);
+
+      // Northeast.
+      if (coords.y > 0) {
+        neighbourIds.push(1 + tileId - settings.width);
+      }
+    }
+
+    // Northwest.
+    if (coords.y > 0) {
+      neighbourIds.push(tileId - settings.width);
+    }
+
+    // Southeast.
+    if (coords.y < settings.height - 1) {
+      neighbourIds.push(tileId + settings.width);
+    }
+
+    return neighbourIds;
+  }
+
   return _validDirections[settings.orientation].map(function (dir) {
     return getNeighbourTileIdByCoordinates(settings, coords.x, coords.y, dir);
   }).filter(function (tile) {
@@ -429,7 +447,7 @@ function getTilePositionById(settings, tileId) {
 function getShortestPathsFromTileId(settings, tileId, options) {
   if (settings.validate !== false) {
     validateSettings(settings);
-    if (typeof(tileId) !== 'string') {
+    if (typeof(tileId) !== 'number') {
       throw new Error('tileId must be a string, got: ' + typeof tileId);
     }
   }

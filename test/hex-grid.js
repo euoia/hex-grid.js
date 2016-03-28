@@ -108,7 +108,7 @@ describe('getTileIdByCoordinates', function() {
 
   it('should return a tile ID for coordinates within the boundaries', function() {
     var tileId = hexGrid.getTileIdByCoordinates(grid, 5, 5);
-    expect(typeof(tileId)).to.equal('string');
+    expect(typeof(tileId)).to.equal('number');
   });
 
   it('should return a tile that has a unique id', function() {
@@ -225,7 +225,7 @@ describe('getNeighbourTileIdByCoordinates', function() {
 
   it('should be able to go west from tile (5,5)', function() {
     expect(typeof(hexGrid.getNeighbourTileIdByCoordinates(grid, 5, 5, 'west')))
-      .to.equal('string');
+      .to.equal('number');
   });
 
   it('should be bijective', function() {
@@ -271,7 +271,7 @@ describe('getNeighbourTileIdByCoordinates', function() {
 });
 
 
-describe('getNeighbourIdsById', function() {
+describe('getNeighbourIdsByTileId (5x5)', function() {
   var grid;
   beforeEach(function () {
     grid = {
@@ -285,6 +285,7 @@ describe('getNeighbourIdsById', function() {
   it('should return an array of 6 tiles for a middle tile', function() {
     var tileId = hexGrid.getTileIdByCoordinates(grid, 1, 1);
     var neighbourIds = hexGrid.getNeighbourIdsByTileId(grid, tileId);
+
     expect(neighbourIds.length).to.equal(6);
   });
 
@@ -292,6 +293,39 @@ describe('getNeighbourIdsById', function() {
     var tileId = hexGrid.getTileIdByCoordinates(grid, 0, 0);
     var neighbourIds = hexGrid.getNeighbourIdsByTileId(grid, tileId);
     expect(neighbourIds.length).to.equal(3);
+  });
+});
+
+describe('getNeighbourIdsByTileId (6x6)', function() {
+  var grid;
+  beforeEach(function () {
+    grid = {
+      width: 6,
+      height: 6,
+      orientation: 'pointy-topped',
+      layout: 'even-r',
+      shape: 'parallelogram'
+    };
+  });
+
+  it('should return an array of 6 tiles for a middle tile', function() {
+    var tileId = hexGrid.getTileIdByCoordinates(grid, 2, 2);
+    var neighbourIds = hexGrid.getNeighbourIdsByTileId(grid, tileId);
+    expect(neighbourIds.length).to.equal(6);
+  });
+
+  it('should return an array of length 2 for top left and bottom right tiles', function() {
+    expect(hexGrid.getNeighbourIdsByTileId(grid, hexGrid.getTileIdByCoordinates(grid, 0, 0)).length)
+      .to.equal(2);
+    expect(hexGrid.getNeighbourIdsByTileId(grid, hexGrid.getTileIdByCoordinates(grid, 5, 5)).length)
+      .to.equal(2);
+  });
+
+  it('should return an array of length 3 for bottom left and top right tiles', function() {
+    expect(hexGrid.getNeighbourIdsByTileId(grid, hexGrid.getTileIdByCoordinates(grid, 5, 0)).length)
+      .to.equal(3);
+    expect(hexGrid.getNeighbourIdsByTileId(grid, hexGrid.getTileIdByCoordinates(grid, 0, 5)).length)
+      .to.equal(3);
   });
 });
 
