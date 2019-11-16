@@ -32,7 +32,7 @@
   "homepage": "https://github.com/euoia/hex-grid.js",
   "devDependencies": {
     "expect.js": "^0.3.1",
-    "jsdoc-to-markdown": "^1.1.1",
+    "jsdoc-to-markdown": "^5.0.2",
     "mocha": "^2.1.0"
   }
 }

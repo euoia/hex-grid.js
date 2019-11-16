@@ -16,6 +16,7 @@ mocha
 Library
 -------
   <a name="module_hex-grid"></a>
+
 ## hex-grid
 Exports a constructor taking an options object.
 
@@ -48,24 +49,25 @@ var hexGrid = new HexGrid({
 ```
 
 * [hex-grid](#module_hex-grid)
-  * [HexGrid](#exp_module_hex-grid--HexGrid) ⏏
-    * [new HexGrid(options)](#new_module_hex-grid--HexGrid_new)
-    * [.getWidth()](#module_hex-grid--HexGrid+getWidth) ⇒ <code>number</code>
-    * [.getHeight()](#module_hex-grid--HexGrid+getHeight) ⇒ <code>number</code>
-    * [.isWithinBoundaries(x, y)](#module_hex-grid--HexGrid+isWithinBoundaries) ⇒ <code>bool</code>
-    * [.getTileByCoords(x, y)](#module_hex-grid--HexGrid+getTileByCoords) ⇒ <code>tile</code> &#124; <code>null</code>
-    * [.getTileIterator()](#module_hex-grid--HexGrid+getTileIterator) ⇒ <code>object</code>
-    * [.isValidDirection()](#module_hex-grid--HexGrid+isValidDirection) ⇒ <code>bool</code>
-    * [.getCoordsById(tileId)](#module_hex-grid--HexGrid+getCoordsById) ⇒ <code>object</code> &#124; <code>null</code>
-    * [.getTileById(tileId)](#module_hex-grid--HexGrid+getTileById) ⇒ <code>object</code> &#124; <code>null</code>
-    * [.getNeighbourByCoords(x, y, dir)](#module_hex-grid--HexGrid+getNeighbourByCoords) ⇒ <code>object</code> &#124; <code>null</code>
-    * [.getNeighbourById(tileId, dir)](#module_hex-grid--HexGrid+getNeighbourById) ⇒ <code>object</code> &#124; <code>null</code>
-    * [.getNeighboursById(tileId)](#module_hex-grid--HexGrid+getNeighboursById) ⇒ <code>Array.&lt;object&gt;</code>
-    * [.getPositionByCoords(x, y)](#module_hex-grid--HexGrid+getPositionByCoords) ⇒ <code>object</code>
-    * [.getPositionById(tileId)](#module_hex-grid--HexGrid+getPositionById) ⇒ <code>object</code>
-    * [.getShortestPathsFromTileId(tileId, options)](#module_hex-grid--HexGrid+getShortestPathsFromTileId) ⇒ <code>object</code>
+    * [HexGrid](#exp_module_hex-grid--HexGrid) ⏏
+        * [new HexGrid(options)](#new_module_hex-grid--HexGrid_new)
+        * [.getWidth()](#module_hex-grid--HexGrid+getWidth) ⇒ <code>number</code>
+        * [.getHeight()](#module_hex-grid--HexGrid+getHeight) ⇒ <code>number</code>
+        * [.isWithinBoundaries(x, y)](#module_hex-grid--HexGrid+isWithinBoundaries) ⇒ <code>bool</code>
+        * [.getTileByCoords(x, y)](#module_hex-grid--HexGrid+getTileByCoords) ⇒ <code>tile</code> \| <code>null</code>
+        * [.getTileIterator()](#module_hex-grid--HexGrid+getTileIterator) ⇒ <code>object</code>
+        * [.isValidDirection()](#module_hex-grid--HexGrid+isValidDirection) ⇒ <code>bool</code>
+        * [.getCoordsById(tileId)](#module_hex-grid--HexGrid+getCoordsById) ⇒ <code>object</code> \| <code>null</code>
+        * [.getTileById(tileId)](#module_hex-grid--HexGrid+getTileById) ⇒ <code>object</code> \| <code>null</code>
+        * [.getNeighbourByCoords(x, y, dir)](#module_hex-grid--HexGrid+getNeighbourByCoords) ⇒ <code>object</code> \| <code>null</code>
+        * [.getNeighbourById(tileId, dir)](#module_hex-grid--HexGrid+getNeighbourById) ⇒ <code>object</code> \| <code>null</code>
+        * [.getNeighboursById(tileId)](#module_hex-grid--HexGrid+getNeighboursById) ⇒ <code>Array.&lt;object&gt;</code>
+        * [.getPositionByCoords(x, y)](#module_hex-grid--HexGrid+getPositionByCoords) ⇒ <code>object</code>
+        * [.getPositionById(tileId)](#module_hex-grid--HexGrid+getPositionById) ⇒ <code>object</code>
+        * [.getShortestPathsFromTileId(tileId, options)](#module_hex-grid--HexGrid+getShortestPathsFromTileId) ⇒ <code>object</code>
 
 <a name="exp_module_hex-grid--HexGrid"></a>
+
 ### HexGrid ⏏
 A hexagonal grid.
 
@@ -73,6 +75,7 @@ A hexagonal grid.
 **See**: [http://redblobgames.com/grids/hexagons](http://redblobgames.com/grids/hexagons) for explanations of
 `options.orientation` and `options.layout`.  
 <a name="new_module_hex-grid--HexGrid_new"></a>
+
 #### new HexGrid(options)
 
 | Param | Type | Description |
@@ -85,22 +88,25 @@ A hexagonal grid.
 | [options.layout] | <code>string</code> | The layout of the map. Must be one of: odd-q, even-q, odd-r, even-r. |
 
 <a name="module_hex-grid--HexGrid+getWidth"></a>
+
 #### hexGrid.getWidth() ⇒ <code>number</code>
 Gets the width of the grid.
 
-**Kind**: instance method of <code>[HexGrid](#exp_module_hex-grid--HexGrid)</code>  
+**Kind**: instance method of [<code>HexGrid</code>](#exp_module_hex-grid--HexGrid)  
 **Returns**: <code>number</code> - The width of the grid.  
 <a name="module_hex-grid--HexGrid+getHeight"></a>
+
 #### hexGrid.getHeight() ⇒ <code>number</code>
 Gets the height of the grid.
 
-**Kind**: instance method of <code>[HexGrid](#exp_module_hex-grid--HexGrid)</code>  
+**Kind**: instance method of [<code>HexGrid</code>](#exp_module_hex-grid--HexGrid)  
 **Returns**: <code>number</code> - The height of the grid.  
 <a name="module_hex-grid--HexGrid+isWithinBoundaries"></a>
+
 #### hexGrid.isWithinBoundaries(x, y) ⇒ <code>bool</code>
 Returns whether a coordinate is within the grid boundaries.
 
-**Kind**: instance method of <code>[HexGrid](#exp_module_hex-grid--HexGrid)</code>  
+**Kind**: instance method of [<code>HexGrid</code>](#exp_module_hex-grid--HexGrid)  
 **Returns**: <code>bool</code> - Whether the coordinate is within the boundaries of the
 grid.  
 
@@ -110,11 +116,12 @@ grid.
 | y | <code>number</code> | The Y coordinate. |
 
 <a name="module_hex-grid--HexGrid+getTileByCoords"></a>
-#### hexGrid.getTileByCoords(x, y) ⇒ <code>tile</code> &#124; <code>null</code>
+
+#### hexGrid.getTileByCoords(x, y) ⇒ <code>tile</code> \| <code>null</code>
 Gets a specific tile by its x and y coordinates.
 
-**Kind**: instance method of <code>[HexGrid](#exp_module_hex-grid--HexGrid)</code>  
-**Returns**: <code>tile</code> &#124; <code>null</code> - The tile. Null if not a valid coordinate.  
+**Kind**: instance method of [<code>HexGrid</code>](#exp_module_hex-grid--HexGrid)  
+**Returns**: <code>tile</code> \| <code>null</code> - The tile. Null if not a valid coordinate.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -122,46 +129,51 @@ Gets a specific tile by its x and y coordinates.
 | y | <code>number</code> | The Y coordinate. |
 
 <a name="module_hex-grid--HexGrid+getTileIterator"></a>
+
 #### hexGrid.getTileIterator() ⇒ <code>object</code>
 Returns an iterator with a next() function that iterates through the
 tiles in the grid.
 
-**Kind**: instance method of <code>[HexGrid](#exp_module_hex-grid--HexGrid)</code>  
+**Kind**: instance method of [<code>HexGrid</code>](#exp_module_hex-grid--HexGrid)  
 **Returns**: <code>object</code> - The iterator object.  
 <a name="module_hex-grid--HexGrid+isValidDirection"></a>
+
 #### hexGrid.isValidDirection() ⇒ <code>bool</code>
 Whether a given direction is valid for this map layout.
 
-**Kind**: instance method of <code>[HexGrid](#exp_module_hex-grid--HexGrid)</code>  
+**Kind**: instance method of [<code>HexGrid</code>](#exp_module_hex-grid--HexGrid)  
 **Returns**: <code>bool</code> - Whether the direction is valid.  
 <a name="module_hex-grid--HexGrid+getCoordsById"></a>
-#### hexGrid.getCoordsById(tileId) ⇒ <code>object</code> &#124; <code>null</code>
+
+#### hexGrid.getCoordsById(tileId) ⇒ <code>object</code> \| <code>null</code>
 Gets the coordinates of a tile given its ID.
 
-**Kind**: instance method of <code>[HexGrid](#exp_module_hex-grid--HexGrid)</code>  
-**Returns**: <code>object</code> &#124; <code>null</code> - An object with x and y properties.  
+**Kind**: instance method of [<code>HexGrid</code>](#exp_module_hex-grid--HexGrid)  
+**Returns**: <code>object</code> \| <code>null</code> - An object with x and y properties.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | tileId | <code>string</code> | The ID of the tile. |
 
 <a name="module_hex-grid--HexGrid+getTileById"></a>
-#### hexGrid.getTileById(tileId) ⇒ <code>object</code> &#124; <code>null</code>
+
+#### hexGrid.getTileById(tileId) ⇒ <code>object</code> \| <code>null</code>
 Gets a tile given its ID.
 
-**Kind**: instance method of <code>[HexGrid](#exp_module_hex-grid--HexGrid)</code>  
-**Returns**: <code>object</code> &#124; <code>null</code> - The tile.  
+**Kind**: instance method of [<code>HexGrid</code>](#exp_module_hex-grid--HexGrid)  
+**Returns**: <code>object</code> \| <code>null</code> - The tile.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | tileId | <code>string</code> | The ID of the tile. |
 
 <a name="module_hex-grid--HexGrid+getNeighbourByCoords"></a>
-#### hexGrid.getNeighbourByCoords(x, y, dir) ⇒ <code>object</code> &#124; <code>null</code>
+
+#### hexGrid.getNeighbourByCoords(x, y, dir) ⇒ <code>object</code> \| <code>null</code>
 Gets a tile's neighbour given its coordinates and a direction.
 
-**Kind**: instance method of <code>[HexGrid](#exp_module_hex-grid--HexGrid)</code>  
-**Returns**: <code>object</code> &#124; <code>null</code> - The neighbouring tile.  
+**Kind**: instance method of [<code>HexGrid</code>](#exp_module_hex-grid--HexGrid)  
+**Returns**: <code>object</code> \| <code>null</code> - The neighbouring tile.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -170,11 +182,12 @@ Gets a tile's neighbour given its coordinates and a direction.
 | dir | <code>string</code> | A direction. One of: north, northeast, east, southeast, south, southwest, west, northwest. |
 
 <a name="module_hex-grid--HexGrid+getNeighbourById"></a>
-#### hexGrid.getNeighbourById(tileId, dir) ⇒ <code>object</code> &#124; <code>null</code>
+
+#### hexGrid.getNeighbourById(tileId, dir) ⇒ <code>object</code> \| <code>null</code>
 Gets a tile's neighbour given the tile's ID and a direction.
 
-**Kind**: instance method of <code>[HexGrid](#exp_module_hex-grid--HexGrid)</code>  
-**Returns**: <code>object</code> &#124; <code>null</code> - The neighbouring tile.  
+**Kind**: instance method of [<code>HexGrid</code>](#exp_module_hex-grid--HexGrid)  
+**Returns**: <code>object</code> \| <code>null</code> - The neighbouring tile.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -182,10 +195,11 @@ Gets a tile's neighbour given the tile's ID and a direction.
 | dir | <code>string</code> | A direction. One of: north, northeast, east, southeast, south, southwest, west, northwest. |
 
 <a name="module_hex-grid--HexGrid+getNeighboursById"></a>
+
 #### hexGrid.getNeighboursById(tileId) ⇒ <code>Array.&lt;object&gt;</code>
 Gets all neighbours of a tile given the tile's ID.
 
-**Kind**: instance method of <code>[HexGrid](#exp_module_hex-grid--HexGrid)</code>  
+**Kind**: instance method of [<code>HexGrid</code>](#exp_module_hex-grid--HexGrid)  
 **Returns**: <code>Array.&lt;object&gt;</code> - The neighbouring tiles.  
 
 | Param | Type | Description |
@@ -193,12 +207,13 @@ Gets all neighbours of a tile given the tile's ID.
 | tileId | <code>string</code> | The tile's ID. |
 
 <a name="module_hex-grid--HexGrid+getPositionByCoords"></a>
+
 #### hexGrid.getPositionByCoords(x, y) ⇒ <code>object</code>
 Gets the position of a tile by its coordinates. Due to the way
 hexagonal grids work, the position of half of the tiles are offset by
 0.5.
 
-**Kind**: instance method of <code>[HexGrid](#exp_module_hex-grid--HexGrid)</code>  
+**Kind**: instance method of [<code>HexGrid</code>](#exp_module_hex-grid--HexGrid)  
 **Returns**: <code>object</code> - An object with x and y properties.  
 
 | Param | Type | Description |
@@ -207,10 +222,11 @@ hexagonal grids work, the position of half of the tiles are offset by
 | y | <code>number</code> | The Y coordinate of the tile. |
 
 <a name="module_hex-grid--HexGrid+getPositionById"></a>
+
 #### hexGrid.getPositionById(tileId) ⇒ <code>object</code>
 Gets the position of a tile by its ID.
 
-**Kind**: instance method of <code>[HexGrid](#exp_module_hex-grid--HexGrid)</code>  
+**Kind**: instance method of [<code>HexGrid</code>](#exp_module_hex-grid--HexGrid)  
 **Returns**: <code>object</code> - An object with x and y properties.  
 
 | Param | Type | Description |
@@ -218,10 +234,11 @@ Gets the position of a tile by its ID.
 | tileId | <code>string</code> | The tile's ID. |
 
 <a name="module_hex-grid--HexGrid+getShortestPathsFromTileId"></a>
+
 #### hexGrid.getShortestPathsFromTileId(tileId, options) ⇒ <code>object</code>
 Gets all shortest paths from a given starting tile.
 
-**Kind**: instance method of <code>[HexGrid](#exp_module_hex-grid--HexGrid)</code>  
+**Kind**: instance method of [<code>HexGrid</code>](#exp_module_hex-grid--HexGrid)  
 **Returns**: <code>object</code> - An object where the keys are the final tileId in a path
 and the values are Path objects. The Path object looks like this:
 {
@@ -243,5 +260,5 @@ The zero-length path from a tile to itself is not returned.
 | tileId | <code>string</code> | The tile's ID. |
 | options | <code>object</code> | An options object. |
 | options.maxCost | <code>number</code> | The maximum allowed cost of a path, or POSITIVE_INFINITY if not specified. If specified, a pathCost function must be provided. |
-| options.moveCost | <code>number</code> &#124; <code>function</code> | The cost of moving from one tile to another. If a function is provided, it is called like `options.pathCost(fromTile, toTile)` and it should return the cost of moving from fromTile to toTile. Defaults to 1. |
+| options.moveCost | <code>number</code> \| <code>function</code> | The cost of moving from one tile to another. If a function is provided, it is called like `options.pathCost(fromTile, toTile)` and it should return the cost of moving from fromTile to toTile. Defaults to 1. |
 
